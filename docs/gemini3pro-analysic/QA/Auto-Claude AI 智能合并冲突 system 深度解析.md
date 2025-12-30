@@ -1,7 +1,7 @@
 # Auto-Claude AI 智能合并冲突系统深度解析
 
 **日期**: 2025-12-22
-**分析对象**: Intent-Aware Merge System (`auto-claude/merge/`)
+**分析对象**: Intent-Aware Merge System (`apps/backend/merge/`)
 
 ---
 
@@ -13,7 +13,7 @@
 
 ## 2. 架构组件 (Core Components)
 
-位于 `auto-claude/merge/`，系统由以下核心模块驱动：
+位于 `apps/backend/merge/`，系统由以下核心模块驱动：
 
 ### 2.1 演变追踪器 (`FileEvolutionTracker`)
 - **功能**: 记录文件从 `main` 分支到各个 `worktree` 任务分支的完整演化路径。

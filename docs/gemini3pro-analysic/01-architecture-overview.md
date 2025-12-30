@@ -8,19 +8,20 @@ Auto-Claude 是一个专为 AI 编码工作流设计的桌面应用与 CLI 框�
 
 ```
 Auto-Claude-main/
-├── auto-claude/               # [Backend] Python 核心框架
-│   ├── run.py                 # CLI 入口点
-│   ├── cli/                   # 命令行交互层
-│   ├── agents/                # AI Agent 实现 (Planner, Coder, QA)
-│   ├── core/                  # 核心基础设施 (Auth, Context)
-│   ├── services/              # 外部服务集成 (LLM, Linear)
-│   └── ui/                    # 终端 UI 组件 (Rich TUI)
-│
-├── auto-claude-ui/            # [Frontend] Electron 桌面应用
-│   ├── src/
-│   │   ├── main/              # Electron 主进程
-│   │   └── renderer/          # React 渲染进程
-│   └── package.json
+├── apps/
+│   ├── backend/               # [Backend] Python 核心框架
+│   │   ├── run.py             # CLI 入口点
+│   │   ├── cli/               # 命令行交互层
+│   │   ├── agents/            # AI Agent 实现 (Planner, Coder, QA)
+│   │   ├── core/              # 核心基础设施 (Auth, Context)
+│   │   ├── services/          # 外部服务集成 (LLM, Linear)
+│   │   └── ui/                # 终端 UI 组件 (Rich TUI)
+│   │
+│   └── frontend/              # [Frontend] Electron 桌面应用
+│       ├── src/
+│       │   ├── main/          # Electron 主进程
+│       │   └── renderer/      # React 渲染进程
+│       └── package.json
 │
 ├── .auto-claude/              # [Runtime Data] 项目运行时数据 (生成的)
 │   ├── specs/                 # 任务规范文档
@@ -39,7 +40,7 @@ Auto-Claude 的核心是一个基于状态机的 Agent 编排系统，辅以严�
 ```mermaid
 graph TD
     User[用户输入] -->|claude /spec| Spec[Spec 文档 (.md)]
-    Spec -->|auto-claude/run.py| Planner[Planner Agent]
+    Spec -->|apps/backend/run.py| Planner[Planner Agent]
     
     subgraph "Phase 1: Planning"
         Planner -->|生成| Plan[Implementation Plan (.json)]

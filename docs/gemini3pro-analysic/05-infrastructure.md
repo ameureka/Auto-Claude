@@ -29,7 +29,7 @@ def _unstage_gitignored_files(self):
 
 ## 2. 安全验证系统 (Security Validators)
 
-位于 `auto-claude/security/`，实现了一套多层防御体系。
+位于 `apps/backend/security/`，实现了一套多层防御体系。
 
 ### 2.1 验证器类型
 - **FileSystem Validators**: 限制文件操作范围（禁止访问项目目录之外的文件，禁止修改 `.git` 目录）。

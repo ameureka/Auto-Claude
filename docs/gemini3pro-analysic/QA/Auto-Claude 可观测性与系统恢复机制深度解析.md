@@ -1,7 +1,7 @@
 # Auto-Claude 可观测性与系统恢复机制深度解析
 
 **日期**: 2025-12-22
-**分析对象**: Task Logging & Recovery Suite (`auto-claude/task_logger/`, `services/recovery.py`)
+**分析对象**: Task Logging & Recovery Suite (`apps/backend/task_logger/`, `services/recovery.py`)
 
 ---
 
@@ -13,7 +13,7 @@
 
 ## 2. 任务日志系统 (`TaskLogger`)
 
-位于 `auto-claude/task_logger/`，它负责记录 Agent 的每一个呼吸。
+位于 `apps/backend/task_logger/`，它负责记录 Agent 的每一个呼吸。
 
 ### 2.1 结构化存储
 - **文件**: 每个任务目录下的 `task_logs.json`。

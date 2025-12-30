@@ -29,7 +29,13 @@ from agents.tools_pkg import (
 )
 from claude_agent_sdk import ClaudeAgentOptions, ClaudeSDKClient
 from claude_agent_sdk.types import HookMatcher
-from core.auth import get_sdk_env_vars, require_auth_token
+from core.auth import (
+    apply_auth_env,
+    get_sdk_env_vars,
+    get_token_type,
+    require_auth_token,
+    validate_proxy_config,
+)
 from linear_updater import is_linear_enabled
 from prompts_pkg.project_context import detect_project_capabilities, load_project_index
 from security import bash_security_hook
@@ -133,12 +139,22 @@ def create_client(
        (see security.py for ALLOWED_COMMANDS)
     4. Tool filtering - Each agent type only sees relevant tools (prevents misuse)
     """
-    oauth_token = require_auth_token()
-    # Ensure SDK can access it via its expected env var
-    os.environ["CLAUDE_CODE_OAUTH_TOKEN"] = oauth_token
+    token = require_auth_token()
+    token_type = apply_auth_env(token)  # Unified auth env injection
+
+    # Validate Proxy configuration
+    is_valid, error_msg = validate_proxy_config()
+    if not is_valid:
+        raise ValueError(f"Proxy configuration error: {error_msg}")
 
     # Collect env vars to pass to SDK (ANTHROPIC_BASE_URL, etc.)
     sdk_env = get_sdk_env_vars()
+
+    # Display auth mode warnings
+    if token_type == "api_key":
+        print("⚠️  WARNING: API Key mode - costs charged to your Anthropic account")
+    elif token_type == "proxy":
+        print(f"ℹ️  Proxy mode: {os.environ.get('ANTHROPIC_BASE_URL')}")
 
     # Check if Linear integration is enabled
     linear_enabled = is_linear_enabled()

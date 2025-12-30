@@ -22,7 +22,7 @@
 
   1.1 入口点与初始化
 
-  主入口文件： auto-claude/run.py
+  主入口文件： apps/backend/run.py
 
   # run.py - 轻量级入口
   #!/usr/bin/env python3
@@ -30,7 +30,7 @@
   if __name__ == "__main__":
       main()
 
-  CLI 主模块： auto-claude/cli/main.py
+  CLI 主模块： apps/backend/cli/main.py
 
   初始化流程：
   1. setup_environment()     # 环境配置
@@ -129,7 +129,7 @@
 
   2.1 Claude SDK 客户端封装
 
-  文件： auto-claude/core/client.py
+  文件： apps/backend/core/client.py
 
   客户端创建：
   def create_client(
@@ -148,7 +148,7 @@
 
   2.2 认证管理
 
-  文件： auto-claude/core/auth.py
+  文件： apps/backend/core/auth.py
 
   认证流程：
   def require_auth_token() -> str:
@@ -216,7 +216,7 @@
 
   3.2 Agent 执行循环
 
-  文件： auto-claude/agent.py
+  文件： apps/backend/agent.py
 
   async def run_autonomous_agent(
       project_dir: Path,
@@ -246,7 +246,7 @@
 
   3.3 会话后处理
 
-  文件： auto-claude/agents/session.py
+  文件： apps/backend/agents/session.py
 
   async def post_session_processing(
       spec_dir, project_dir, subtask_id, session_num,
@@ -266,7 +266,7 @@
 
   3.4 恢复机制
 
-  文件： auto-claude/recovery.py
+  文件： apps/backend/recovery.py
 
   class RecoveryManager:
       """
@@ -322,7 +322,7 @@
 
   4.2 自定义 Auto-Claude 工具
 
-  目录： auto-claude/agents/tools_pkg/tools/
+  目录： apps/backend/agents/tools_pkg/tools/
 
   | 工具文件    | 功能              | Agent 可用性      |
   |-------------|-------------------|-------------------|
@@ -401,7 +401,7 @@
   5.1 Electron 应用架构
 
   目录结构：
-  auto-claude-ui/
+  apps/frontend/
   ├── src/
   │   ├── main/           # Electron 主进程
   │   │   ├── index.ts    # 应用入口
@@ -526,10 +526,10 @@
 
   Python 测试：
   # 运行所有测试
-  auto-claude/.venv/bin/pytest tests/ -v
+  apps/backend/.venv/bin/pytest tests/ -v
 
   # 跳过慢测试
-  auto-claude/.venv/bin/pytest tests/ -m "not slow"
+  apps/backend/.venv/bin/pytest tests/ -m "not slow"
 
   Electron 测试：
   # 单元测试
@@ -712,8 +712,8 @@
   | memory/main.py                      | 内存系统        |
   | prompts/coder.md                    | Coder Prompt    |
   | prompts/planner.md                  | Planner Prompt  |
-  | auto-claude-ui/src/main/index.ts    | Electron 入口   |
-  | auto-claude-ui/src/renderer/stores/ | Zustand Stores  |
+  | apps/frontend/src/main/index.ts    | Electron 入口   |
+  | apps/frontend/src/renderer/stores/ | Zustand Stores  |
 
   ---
   附录 B：环境变量参考

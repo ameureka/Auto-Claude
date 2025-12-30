@@ -23,26 +23,27 @@
 
 ```
 Auto-Claude-main/
-├── auto-claude/           # Python 后端框架 (432 个子文件)
-│   ├── agents/            # 代理实现 (Coder, Planner, QA 等)
-│   ├── prompts/           # 代理提示词模板 (25+ 个 MD 文件)
-│   ├── spec/              # Spec 生成和管理
-│   ├── qa/                # QA 验证逻辑
-│   ├── memory/            # 会话记忆管理
-│   ├── merge/             # AI 合并冲突解决
-│   ├── security/          # 安全控制
-│   ├── core/              # 核心客户端和工具
-│   └── cli/               # 命令行接口
+├── apps/
+│   ├── backend/             # Python 后端框架 (432 个子文件)
+│   │   ├── agents/          # 代理实现 (Coder, Planner, QA 等)
+│   │   ├── prompts/         # 代理提示词模板 (25+ 个 MD 文件)
+│   │   ├── spec/            # Spec 生成和管理
+│   │   ├── qa/              # QA 验证逻辑
+│   │   ├── memory/          # 会话记忆管理
+│   │   ├── merge/           # AI 合并冲突解决
+│   │   ├── security/        # 安全控制
+│   │   ├── core/            # 核心客户端和工具
+│   │   └── cli/             # 命令行接口
+│   │
+│   └── frontend/            # Electron 桌面应用 (561 个子文件)
+│       ├── src/main/        # Electron 主进程
+│       ├── src/renderer/    # React 渲染进程
+│       ├── src/preload/     # 预加载脚本
+│       └── src/shared/      # 共享类型和工具
 │
-├── auto-claude-ui/        # Electron 桌面应用 (561 个子文件)
-│   ├── src/main/          # Electron 主进程
-│   ├── src/renderer/      # React 渲染进程
-│   ├── src/preload/       # 预加载脚本
-│   └── src/shared/        # 共享类型和工具
-│
-├── tests/                 # 测试套件 (57 个文件)
-├── guides/                # 用户指南
-└── scripts/               # 构建和发布脚本
+├── tests/                   # 测试套件 (57 个文件)
+├── guides/                  # 用户指南
+└── scripts/                 # 构建和发布脚本
 ```
 
 ---
@@ -250,7 +251,7 @@ Auto-Claude 使用 **Git Worktree** 机制来隔离构建：
 ├── .git/                    ← 必须存在
 ├── src/                     ← 你的源码
 └── .worktrees/              ← Auto-Claude 自动创建
-    └── auto-claude/         ← 隔离的工作区（Agent 在这里编码）
+    └── {spec-name}/         ← 隔离的工作区（Agent 在这里编码）
 ```
 
 好处：
@@ -268,22 +269,22 @@ Auto-Claude 使用 **Git Worktree** 机制来隔离构建：
 
 ```bash
 # 运行构建
-python auto-claude/run.py --spec 001
+python apps/backend/run.py --spec 001
 
 # 创建 Spec
-python auto-claude/spec_runner.py --interactive
+python apps/backend/runners/spec_runner.py --interactive
 
 # 运行 QA
-python auto-claude/run.py --spec 001 --qa
+python apps/backend/run.py --spec 001 --qa
 
 # 合并完成的构建
-python auto-claude/run.py --spec 001 --merge
+python apps/backend/run.py --spec 001 --merge
 ```
 
 ### UI 入口
 
 ```bash
-cd auto-claude-ui
+cd apps/frontend
 pnpm install
 pnpm dev
 ```

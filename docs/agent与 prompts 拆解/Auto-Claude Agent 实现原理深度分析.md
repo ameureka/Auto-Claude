@@ -66,7 +66,7 @@
 
   4.1 提示词文件列表
 
-  auto-claude/prompts/
+  apps/backend/prompts/
   ├── planner.md              # 规划 Agent (917 行)
   ├── coder.md                # 编码 Agent (972 行)
   ├── coder_recovery.md       # 恢复 Agent (291 行)

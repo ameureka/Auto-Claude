@@ -2,7 +2,7 @@
 
 ## 1. 架构概览
 
-Auto-Claude 的桌面应用 (`auto-claude-ui`) 是一个 Electron 应用，它并不直接包含 AI 逻辑，而是作为 Python CLI 的图形化前端。
+Auto-Claude 的桌面应用 (`apps/frontend`) 是一个 Electron 应用，它并不直接包含 AI 逻辑，而是作为 Python CLI 的图形化前端。
 
 ```mermaid
 graph TD
@@ -21,7 +21,7 @@ UI 与后端通过标准输入输出流（Stdio）进行通信。为了支持结
 
 ## 3. 进程管理
 
-位于 `auto-claude-ui/src/main/agent-manager.ts`：
+位于 `apps/frontend/src/main/agent-manager.ts`：
 
 - **生命周期管理**: 负责启动、停止 Python 进程。
 - **环境检测**: 自动检测用户的 Python 环境（Conda, venv, System Python）。

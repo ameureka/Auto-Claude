@@ -1,7 +1,7 @@
 # Auto-Claude 项目分析与规格书校验机制深度解析
 
 **日期**: 2025-12-22
-**分析对象**: Project Analysis & Spec Validation (`auto-claude/project/`, `auto-claude/spec/validate_pkg/`)
+**分析对象**: Project Analysis & Spec Validation (`apps/backend/project/`, `apps/backend/spec/validate_pkg/`)
 
 ---
 
@@ -13,7 +13,7 @@ Auto-Claude 的工程成功秘诀之一在于其**“不盲目动工”**。在 
 
 ## 2. 项目全景探测器 (`FrameworkDetector`)
 
-位于 `auto-claude/project/`，它是系统的“数字眼睛”。
+位于 `apps/backend/project/`，它是系统的“数字眼睛”。
 
 ### 2.1 跨语言识别能力
 - **Node.js**: 识别从 React/Vue 到 NestJS/Express 的全技术栈，甚至包含 Biome/Oxlint 等新兴工具。

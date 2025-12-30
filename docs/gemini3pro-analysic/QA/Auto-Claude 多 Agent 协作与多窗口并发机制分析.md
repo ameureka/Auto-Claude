@@ -1,7 +1,7 @@
 # Auto-Claude 多 Agent 协作与多窗口并发机制分析
 
 **日期**: 2025-12-22
-**分析对象**: Agent Roles & Terminal Concurrency (`auto-claude/services/`, `auto-claude-ui/src/main/terminal/`)
+**分析对象**: Agent Roles & Terminal Concurrency (`apps/backend/services/`, `apps/frontend/src/main/terminal/`)
 
 ---
 
@@ -57,7 +57,7 @@ Electron 主进程利用 `node-pty` 库为每个 Tab 开启一个独立的子进
 
 ### 4.1 终端管理中枢 (`TerminalManager`)
 ```typescript
-// pro-Auto-Claude/Auto-Claude-main/auto-claude-ui/src/main/terminal/terminal-manager.ts
+// pro-Auto-Claude/Auto-Claude-main/apps/frontend/src/main/terminal/terminal-manager.ts
 export class TerminalManager {
   private terminals: Map<string, TerminalProcess> = new Map();
   // 创建新窗口并启动 Claude 实例
@@ -69,7 +69,7 @@ export class TerminalManager {
 
 ### 4.2 环境编排器 (`ServiceOrchestrator`)
 ```python
-# pro-Auto-Claude/Auto-Claude-main/auto-claude/services/orchestrator.py
+# pro-Auto-Claude/Auto-Claude-main/apps/backend/services/orchestrator.py
 class ServiceOrchestrator:
     def start_services(self):
         if self._compose_file:

@@ -333,10 +333,10 @@
   第三步：运行 Auto-Claude
 
   # 激活环境
-  source auto-claude/.venv/bin/activate
+  source apps/backend/.venv/bin/activate
 
   # 运行规划
-  python auto-claude/run.py --spec 003-new-feature
+  python apps/backend/run.py --spec 003-new-feature
 
   # Auto-Claude 会:
   # 1. Planner Agent 读取 spec.md + 知识库
@@ -403,7 +403,7 @@
        * 前置：将 AMEUREKA 的 code-specs-standards 浓缩进 patterns.md。
        * 后置：利用 Auto-Claude 的 insight_extractor，在每次成功开发后，自动将新发现的 AMEUREKA 模式补充到 knowledge/ 目录中。
    3. Prompt 级别劫持：
-      不修改 Auto-Claude 的 Python 源码，而是修改 auto-claude/prompts/coder.md 的头部，增加一行：
+      不修改 Auto-Claude 的 Python 源码，而是修改 apps/backend/prompts/coder.md 的头部，增加一行：
       "Read .auto-claude/knowledge/patterns.md and follow AMEUREKA conventions strictly."
 
   讨论思考：
@@ -471,7 +471,7 @@
   接下来建议的工作重点：
 
    1. “架构劫持”: 优先将 ameureka Vibe Coding 核心方法论.md 中的 L1-L4 分层逻辑 提炼成一个精简的 Markdown 列表，放入 knowledge/architecture.md。这是 Agent 蜂群协作时不“打架”的根基。
-   2. “命令赋能”: 修改 auto-claude/project/framework_detector.py（参照我们之前的分析），让它能自动识别 AMEUREKA 标志性的 better-auth 或 next-safe-action 依赖，从而自动激活上述所有约束。
+   2. “命令赋能”: 修改 apps/backend/project/framework_detector.py（参照我们之前的分析），让它能自动识别 AMEUREKA 标志性的 better-auth 或 next-safe-action 依赖，从而自动激活上述所有约束。
 
   讨论思考：
   你觉得我们是否需要把 Biome 这种“替代 ESLint/Prettier”的决策也写进 Security Validator？这样 Agent 尝试运行 npm run lint 时，系统会纠正它使用 pnpm biome check。这能极大提升“蜂群”在处理代码质量时的统一感

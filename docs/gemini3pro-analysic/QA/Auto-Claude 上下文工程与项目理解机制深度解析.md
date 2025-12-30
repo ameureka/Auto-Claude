@@ -1,7 +1,7 @@
 # Auto-Claude 上下文工程与项目理解机制深度解析
 
 **日期**: 2025-12-22
-**分析对象**: Context Engineering Suite (`auto-claude/context/`)
+**分析对象**: Context Engineering Suite (`apps/backend/context/`)
 
 ---
 
@@ -13,7 +13,7 @@ AI 编程最大的挑战是“上下文过载”或“上下文缺失”。Auto-
 
 ## 2. 架构组件 (Key Components)
 
-位于 `auto-claude/context/` 目录，系统由以下核心模块驱动：
+位于 `apps/backend/context/` 目录，系统由以下核心模块驱动：
 
 ### 2.1 项目索引器 (`project_index.json`)
 - **功能**: 构建项目的“数字孪生”。

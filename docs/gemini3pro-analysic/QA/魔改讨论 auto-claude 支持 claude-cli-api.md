@@ -56,11 +56,11 @@ Auto-Claude 官方文档明确指出，使用该工具必须拥有 `Claude Pro` 
 
 以下是详细的 "魔改" 指南。请按顺序修改文件。
 
-### 步骤 1: 解锁环境变量 (`auto-claude/core/auth.py`)
+### 步骤 1: 解锁环境变量 (`apps/backend/core/auth.py`)
 
 **目标**: 让系统允许读取 `ANTHROPIC_API_KEY`。
 
-打开 `auto-claude/core/auth.py`，找到 `AUTH_TOKEN_ENV_VARS` 和 `SDK_ENV_VARS` 的定义，添加 API Key 支持。
+打开 `apps/backend/core/auth.py`，找到 `AUTH_TOKEN_ENV_VARS` 和 `SDK_ENV_VARS` 的定义，添加 API Key 支持。
 
 ```python
 # 修改前
@@ -82,11 +82,11 @@ SDK_ENV_VARS = [
 ]
 ```
 
-### 步骤 2: 智能 Token 注入 (`auto-claude/core/client.py`)
+### 步骤 2: 智能 Token 注入 (`apps/backend/core/client.py`)
 
 **目标**: 根据 Token 类型（API Key vs OAuth），将其注入到正确的环境变量中。
 
-打开 `auto-claude/core/client.py`，找到 `create_client` 函数（约 135 行），修改 Token 处理逻辑：
+打开 `apps/backend/core/client.py`，找到 `create_client` 函数（约 135 行），修改 Token 处理逻辑：
 
 ```python
 def create_client(...):
@@ -111,11 +111,11 @@ def create_client(...):
     # ...后续代码保持不变
 ```
 
-### 步骤 3: 移除 CLI 报错 (`auto-claude/cli/utils.py`)
+### 步骤 3: 移除 CLI 报错 (`apps/backend/cli/utils.py`)
 
 **目标**: 防止启动时因检测不到 OAuth Token 而报错退出。
 
-打开 `auto-claude/cli/utils.py`，找到 `validate_environment` 函数：
+打开 `apps/backend/cli/utils.py`，找到 `validate_environment` 函数：
 
 ```python
 def validate_environment(spec_dir: Path) -> bool:
@@ -147,7 +147,7 @@ def validate_environment(spec_dir: Path) -> bool:
     ```
 3.  运行 Auto-Claude：
     ```bash
-    python auto-claude/run.py --list
+    python apps/backend/run.py --list
     ```
 
 ---

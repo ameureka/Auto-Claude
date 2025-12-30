@@ -1,7 +1,7 @@
 # Auto-Claude QA 系统与自我修复闭环深度解析
 
 **日期**: 2025-12-22
-**分析对象**: QA Loop Orchestration (`auto-claude/qa/`)
+**分析对象**: QA Loop Orchestration (`apps/backend/qa/`)
 
 ---
 

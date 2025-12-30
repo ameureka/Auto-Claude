@@ -485,7 +485,7 @@ class RecoveryManager:
 **模块化分层架构：**
 
 ```
-auto-claude/
+apps/backend/
 ├── cli/                    # CLI 层（用户交互）
 ├── core/                   # 核心服务层
 ├── agents/                 # Agent 实现层

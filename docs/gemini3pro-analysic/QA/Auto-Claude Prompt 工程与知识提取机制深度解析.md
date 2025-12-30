@@ -1,7 +1,7 @@
 # Auto-Claude Prompt 工程与知识提取机制深度解析
 
 **日期**: 2025-12-22
-**分析对象**: Prompt Generation & Insight Extraction (`auto-claude/prompts_pkg/`, `auto-claude/analysis/`)
+**分析对象**: Prompt Generation & Insight Extraction (`apps/backend/prompts_pkg/`, `apps/backend/analysis/`)
 
 ---
 

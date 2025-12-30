@@ -72,7 +72,7 @@ Auto-Claude 采用了多层上下文策略来突破 Context Window 限制：
 
 ## 4. Prompt 工程架构
 
-所有 Prompt 模板存储在 `auto-claude/prompts/` 目录下，采用 Markdown 格式。
+所有 Prompt 模板存储在 `apps/backend/prompts/` 目录下，采用 Markdown 格式。
 
 - **模块化**: 将不同阶段的指令分离（Ideation, Spec, Coding, QA）。
 - **动态注入**: 使用 Python 字符串格式化或 Jinja2 (推测) 将运行时数据（如文件列表、Git Diff）注入模板。

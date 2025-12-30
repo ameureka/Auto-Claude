@@ -1,7 +1,7 @@
 # Auto-Claude 任务执行运行器与计划管理模型深度解析
 
 **日期**: 2025-12-22
-**分析对象**: Runner Suite & OOP Implementation Plan (`auto-claude/runners/`, `auto-claude/implementation_plan/`)
+**分析对象**: Runner Suite & OOP Implementation Plan (`apps/backend/runners/`, `apps/backend/implementation_plan/`)
 
 ---
 
@@ -13,7 +13,7 @@ Auto-Claude 并不直接把 LLM 返回的 JSON 字符串传给执行引擎，而
 
 ## 2. 计划管理模型 (`ImplementationPlan`)
 
-位于 `auto-claude/implementation_plan/`，这是整个开发任务的“灵魂”。
+位于 `apps/backend/implementation_plan/`，这是整个开发任务的“灵魂”。
 
 ### 2.1 三层嵌套架构
 1.  **`ImplementationPlan` (Top)**: 管理全局元数据（`feature`, `workflow_type`）、整体状态（`status`）和 QA 签发结果。

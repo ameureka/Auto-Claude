@@ -1,7 +1,7 @@
 # Auto-Claude Security 安全沙箱与权限控制机制深度解析
 
 **日期**: 2025-12-22
-**分析对象**: Security Suite (`auto-claude/security/`)
+**分析对象**: Security Suite (`apps/backend/security/`)
 
 ---
 
@@ -25,7 +25,7 @@ Auto-Claude 的安全设计目标是：允许 Agent 自主执行开发任务，�
 - **效果**: 缩小了 Agent 的攻击面，禁止其运行非必要的系统工具。
 
 ### 2.3 实时指令校验器 (`Validators`)
-这是最核心的逻辑，位于 `auto-claude/security/` 目录下：
+这是最核心的逻辑，位于 `apps/backend/security/` 目录下：
 
 | 验证器 | 校验逻辑 | 拦截示例 |
 | :--- | :--- | :--- |

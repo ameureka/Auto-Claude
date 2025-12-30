@@ -67,18 +67,18 @@ Auto-Claude **不会读取** `~/.claude/settings.json`，导致：
 
 | 层级 | 文件 | 修改内容 |
 |------|------|----------|
-| **后端核心** | `auto-claude/core/auth.py` | 添加读取 `~/.claude/settings.json` 的功能 |
-| **后端核心** | `auto-claude/core/client.py` | 确保代理配置传递给 SDK |
-| **CLI 工具** | `auto-claude/cli/utils.py` | 显示代理配置状态 |
-| **前端 UI** | `auto-claude-ui/src/main/ipc-handlers/env-handlers.ts` | 支持代理配置的读写 |
-| **前端 UI** | `auto-claude-ui/src/shared/types/ipc.ts` | 添加代理配置类型定义 |
-| **前端组件** | `auto-claude-ui/src/renderer/components/project-settings/` | 添加代理配置 UI |
+| **后端核心** | `apps/backend/core/auth.py` | 添加读取 `~/.claude/settings.json` 的功能 |
+| **后端核心** | `apps/backend/core/client.py` | 确保代理配置传递给 SDK |
+| **CLI 工具** | `apps/backend/cli/utils.py` | 显示代理配置状态 |
+| **前端 UI** | `apps/frontend/src/main/ipc-handlers/env-handlers.ts` | 支持代理配置的读写 |
+| **前端 UI** | `apps/frontend/src/shared/types/ipc.ts` | 添加代理配置类型定义 |
+| **前端组件** | `apps/frontend/src/renderer/components/project-settings/` | 添加代理配置 UI |
 
 ---
 
 ## 4. 详细魔改方案
 
-### 4.1 步骤 1: 修改 `auto-claude/core/auth.py` - 读取 Claude Code 配置
+### 4.1 步骤 1: 修改 `apps/backend/core/auth.py` - 读取 Claude Code 配置
 
 ```python
 # 在文件顶部添加
@@ -177,7 +177,7 @@ def get_auth_token_source() -> str | None:
     return None
 ```
 
-### 4.2 步骤 2: 修改 `auto-claude/core/client.py` - 支持代理认证
+### 4.2 步骤 2: 修改 `apps/backend/core/client.py` - 支持代理认证
 
 ```python
 # 在 create_client() 函数中，修改 token 处理逻辑
@@ -209,7 +209,7 @@ def create_client(...) -> ClaudeSDKClient:
     # ... 后续代码不变，确保 env=sdk_env 传递给 ClaudeSDKClient
 ```
 
-### 4.3 步骤 3: 修改 `auto-claude/cli/utils.py` - 显示代理状态
+### 4.3 步骤 3: 修改 `apps/backend/cli/utils.py` - 显示代理状态
 
 ```python
 def validate_environment(spec_dir: Path) -> bool:
@@ -242,7 +242,7 @@ def validate_environment(spec_dir: Path) -> bool:
 
 ### 4.4 步骤 4: 前端 - 添加代理配置类型
 
-**`auto-claude-ui/src/shared/types/ipc.ts`** (添加字段)
+**`apps/frontend/src/shared/types/ipc.ts`** (添加字段)
 
 ```typescript
 export interface ProjectEnvConfig {
@@ -257,7 +257,7 @@ export interface ProjectEnvConfig {
 
 ### 4.5 步骤 5: 前端 - 修改环境配置处理
 
-**`auto-claude-ui/src/main/ipc-handlers/env-handlers.ts`**
+**`apps/frontend/src/main/ipc-handlers/env-handlers.ts`**
 
 ```typescript
 // 在 generateEnvContent 函数中添加代理配置
@@ -299,7 +299,7 @@ if (vars['ANTHROPIC_AUTH_TOKEN']) {
 
 ### 4.6 步骤 6: 前端 - 添加代理配置 UI 组件
 
-**新建 `auto-claude-ui/src/renderer/components/project-settings/ProxyConfigSection.tsx`**
+**新建 `apps/frontend/src/renderer/components/project-settings/ProxyConfigSection.tsx`**
 
 ```tsx
 import { Globe, Server, CheckCircle2, AlertCircle } from 'lucide-react';
@@ -406,7 +406,7 @@ export function ProxyConfigSection({
 
 ### 方案 A: 在 `.env` 文件中配置
 
-在 `auto-claude/.env` 中添加：
+在 `apps/backend/.env` 中添加：
 
 ```bash
 ANTHROPIC_BASE_URL=http://127.0.0.1:8999
@@ -418,7 +418,7 @@ ANTHROPIC_AUTH_TOKEN=proxy_cast
 ```bash
 export ANTHROPIC_BASE_URL=http://127.0.0.1:8999
 export ANTHROPIC_AUTH_TOKEN=proxy_cast
-python auto-claude/run.py --spec 001
+python apps/backend/run.py --spec 001
 ```
 
 ### 方案 C: 只修改 `core/auth.py` 自动读取配置
@@ -447,7 +447,7 @@ curl http://127.0.0.1:8999/health
 
 # 2. 运行 Auto-Claude
 cd your-project
-python auto-claude/run.py --list
+python apps/backend/run.py --list
 
 # 3. 检查输出是否显示代理配置
 # 应该看到类似：
@@ -477,10 +477,10 @@ Claude Code 配置:
     └── "Claude Code-credentials"
 
 Auto-Claude 配置:
-├── auto-claude/.env                 # 环境变量配置
-├── auto-claude/core/auth.py         # 认证逻辑
-├── auto-claude/core/client.py       # SDK 客户端创建
-└── auto-claude/cli/utils.py         # CLI 工具函数
+├── apps/backend/.env                 # 环境变量配置
+├── apps/backend/core/auth.py         # 认证逻辑
+├── apps/backend/core/client.py       # SDK 客户端创建
+└── apps/backend/cli/utils.py         # CLI 工具函数
 ```
 
 ---

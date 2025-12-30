@@ -31,7 +31,7 @@
 - **用途**: 每个新启动的终端窗口都会读取此文件进行“初始化洗脑”。
 
 ### 2.2 环境工具链白名单 (`Allowlist`)
-- **内容**: 修改 `auto-claude/security/process_validators.py`。
+- **内容**: 修改 `apps/backend/security/process_validators.py`。
 - **操作**: 预先授权 `pnpm`, `npx drizzle-kit`, `tsc` 等框架特有命令。
 - **用途**: 消除 Agent 执行过程中的“安全拦截报错”，确保自动化流水线无断点。
 

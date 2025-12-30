@@ -14,7 +14,7 @@
    * 硬编码文案：add-i18n 扫描出的硬编码中文问题，应作为 Coder Agent 提交前的“质量检查项”。
 
   C. 转化为 Spec Templates (规格书模板) —— 告诉 Agent “做什么”
-   * 需求设计模板：001-需求设计阶段/002需求设计模板 下的文件可以直接转化为 auto-claude/templates/feature-spec.md。
+   * 需求设计模板：001-需求设计阶段/002需求设计模板 下的文件可以直接转化为 .auto-claude/templates/feature-spec.md。
    * QA 拆解逻辑：001-QA拆解系统 里的逻辑可以用来增强 Spec Writer 的 Prompt，使其生成的验收标准（Acceptance Criteria）自带 AMEUREKA 风格。
 
   D. 转化为 init.sh (环境初始化) —— 告诉 Agent “怎么跑”

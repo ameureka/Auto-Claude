@@ -14,7 +14,7 @@
 
   2. 核心 Agent 的提示词（Prompts）拆解
 
-  我通过读取 auto-claude/prompts/ 下的文件，发现它们的 Prompt 并不是简单的指令，而是一套严密的“工程操作规范”。
+  我通过读取 apps/backend/prompts/ 下的文件，发现它们的 Prompt 并不是简单的指令，而是一套严密的“工程操作规范”。
 
   A. Coder Agent (coder.md) —— 它的“性格”是什么？
   这个提示词的核心逻辑是 “防御性编程”。
@@ -61,7 +61,7 @@
   你觉得这种“微型化、碎片化”的 Prompt 策略，在处理逻辑极度复杂的“跨组件通信”时，会不会导致 Agent 因为看不见全局而出现“顾此失彼”的情况？我们可以针对这一点深入讨论。
 
     提示词模板概览
-  在 auto-claude/prompts/ 目录下，主要包含以下核心模板：
+  在 apps/backend/prompts/ 目录下，主要包含以下核心模板：
    1. `planner.md`: 架构规划与任务拆解。
    2. `coder.md`: 代码实现与模式遵循。
    3. `qa_reviewer.md`: 验收标准验证与 Bug 发现。

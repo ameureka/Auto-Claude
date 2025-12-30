@@ -53,7 +53,7 @@
   ---
   4. 完整魔改方案（支持 API Key）
 
-  步骤 1: 修改 auto-claude/core/auth.py
+  步骤 1: 修改 apps/backend/core/auth.py
 
   # 第 18-32 行 - 添加 API Key 支持
   AUTH_TOKEN_ENV_VARS = [
@@ -72,7 +72,7 @@
       "API_TIMEOUT_MS",
   ]
 
-  步骤 2: 修改 auto-claude/core/client.py
+  步骤 2: 修改 apps/backend/core/client.py
 
   在 create_client() 函数中添加智能 Token 类型检测：
 
@@ -91,7 +91,7 @@
 
       # ... 后续代码不变
 
-  步骤 3: 修改 auto-claude/cli/utils.py
+  步骤 3: 修改 apps/backend/cli/utils.py
 
   更新 validate_environment() 函数的错误消息：
 
@@ -116,7 +116,7 @@
 
   如果需要在 UI 中也支持 API Key，修改以下文件：
 
-  auto-claude-ui/src/main/claude-profile-manager.ts:344-364
+  apps/frontend/src/main/claude-profile-manager.ts:344-364
 
   getActiveProfileEnv(): Record<string, string> {
     const profile = this.getActiveProfile();

@@ -12,7 +12,7 @@
 3.  **转交控制权**: 导入并调用 `cli.main()`。
 
 ```python
-# auto-claude/run.py
+# apps/backend/run.py
 if sys.version_info < (3, 10):
     sys.exit("Error: Auto Claude requires Python 3.10 or higher...")
 
@@ -64,7 +64,7 @@ def main():
 ### 3.1 环境配置 (`cli/utils.py`)
 `setup_environment` 负责加载配置，它支持开发模式的路径回退。
 
-- **加载逻辑**: 优先加载 `auto-claude/.env`，如果不存在则尝试 `dev/auto-claude/.env`。
+- **加载逻辑**: 优先加载 `apps/backend/.env`，如果不存在则尝试 `dev/apps/backend/.env`。
 - **验证逻辑** (`validate_environment`):
     - 检查 OAuth Token (`CLAUDE_CODE_OAUTH_TOKEN`)。
     - 检查 `spec.md` 是否存在。

@@ -5,7 +5,7 @@ Auto-Claude 的核心优势不仅在于执行代码，更在于其对复杂工�
 
 ## 2. 静态分析层 (`Project Analyzer`)
 
-位于 `auto-claude/project/`，它是系统的“数字雷达”。
+位于 `apps/backend/project/`，它是系统的“数字雷达”。
 
 ### 2.1 技术栈自动探测 (`FrameworkDetector`)
 - **原理**: 扫描 `package.json`, `pyproject.toml`, `Gemfile` 等 10+ 种依赖文件。
