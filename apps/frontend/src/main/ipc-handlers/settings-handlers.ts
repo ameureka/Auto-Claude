@@ -3,7 +3,7 @@ import { existsSync, writeFileSync, mkdirSync, statSync } from 'fs';
 import { execFileSync } from 'node:child_process';
 import path from 'path';
 import { is } from '@electron-toolkit/utils';
-import { IPC_CHANNELS, DEFAULT_APP_SETTINGS } from '../../shared/constants';
+import { IPC_CHANNELS, DEFAULT_APP_SETTINGS, DEFAULT_AGENT_PROFILES } from '../../shared/constants';
 import type {
   AppSettings,
   IPCResult
@@ -111,6 +111,19 @@ export function registerSettingsHandlers(
         needsSave = true;
       }
 
+      // Migration: Sync defaultModel with selectedAgentProfile (#414)
+      // Fixes bug where defaultModel was stuck at 'opus' regardless of profile selection
+      if (!settings._migratedDefaultModelSync) {
+        if (settings.selectedAgentProfile) {
+          const profile = DEFAULT_AGENT_PROFILES.find(p => p.id === settings.selectedAgentProfile);
+          if (profile) {
+            settings.defaultModel = profile.model;
+          }
+        }
+        settings._migratedDefaultModelSync = true;
+        needsSave = true;
+      }
+
       // If no manual autoBuildPath is set, try to auto-detect
       if (!settings.autoBuildPath) {
         const detectedPath = detectAutoBuildSourcePath();
@@ -134,6 +147,7 @@ export function registerSettingsHandlers(
         pythonPath: settings.pythonPath,
         gitPath: settings.gitPath,
         githubCLIPath: settings.githubCLIPath,
+        claudePath: settings.claudePath,
       });
 
       return { success: true, data: settings as AppSettings };
@@ -148,6 +162,15 @@ export function registerSettingsHandlers(
         const savedSettings = readSettingsFile();
         const currentSettings = { ...DEFAULT_APP_SETTINGS, ...savedSettings };
         const newSettings = { ...currentSettings, ...settings };
+
+        // Sync defaultModel when agent profile changes (#414)
+        if (settings.selectedAgentProfile) {
+          const profile = DEFAULT_AGENT_PROFILES.find(p => p.id === settings.selectedAgentProfile);
+          if (profile) {
+            newSettings.defaultModel = profile.model;
+          }
+        }
+
         writeFileSync(settingsPath, JSON.stringify(newSettings, null, 2));
 
         // Apply Python path if changed
@@ -159,12 +182,14 @@ export function registerSettingsHandlers(
         if (
           settings.pythonPath !== undefined ||
           settings.gitPath !== undefined ||
-          settings.githubCLIPath !== undefined
+          settings.githubCLIPath !== undefined ||
+          settings.claudePath !== undefined
         ) {
           configureTools({
             pythonPath: newSettings.pythonPath,
             gitPath: newSettings.gitPath,
             githubCLIPath: newSettings.githubCLIPath,
+            claudePath: newSettings.claudePath,
           });
         }
 
@@ -190,6 +215,7 @@ export function registerSettingsHandlers(
       python: ReturnType<typeof getToolInfo>;
       git: ReturnType<typeof getToolInfo>;
       gh: ReturnType<typeof getToolInfo>;
+      claude: ReturnType<typeof getToolInfo>;
     }>> => {
       try {
         return {
@@ -198,6 +224,7 @@ export function registerSettingsHandlers(
             python: getToolInfo('python'),
             git: getToolInfo('git'),
             gh: getToolInfo('gh'),
+            claude: getToolInfo('claude'),
           },
         };
       } catch (error) {
