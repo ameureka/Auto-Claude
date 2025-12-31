@@ -117,24 +117,48 @@ def validate_environment(spec_dir: Path) -> bool:
     """
     valid = True
 
-    # Check for OAuth token (API keys are not supported)
-    if not get_auth_token():
-        print("Error: No OAuth token found")
-        print("\nAuto Claude requires Claude Code OAuth authentication.")
-        print("Direct API keys (ANTHROPIC_API_KEY) are not supported.")
-        print("\nTo authenticate, run:")
-        print("  claude setup-token")
+    # Check for authentication token
+    token = get_auth_token()
+    if not token:
+        print("Error: No authentication token found")
+        print("\nAuto Claude supports the following authentication methods:\n")
+        print("  1. OAuth Token (recommended):")
+        print("     Run: claude setup-token")
+        print("     Or set CLAUDE_CODE_OAUTH_TOKEN in .env\n")
+        print("  2. API Key (direct billing):")
+        print("     Set ANTHROPIC_API_KEY in .env")
+        print("     ⚠️  Warning: API costs charged to your account\n")
+        print("  3. Proxy/Enterprise:")
+        print("     Set ANTHROPIC_AUTH_TOKEN + ANTHROPIC_BASE_URL in .env")
         valid = False
     else:
         # Show which auth source is being used
         source = get_auth_token_source()
+        token_type = get_token_type(token)
+        
         if source:
             print(f"Auth: {source}")
-
-        # Show custom base URL if set
-        base_url = os.environ.get("ANTHROPIC_BASE_URL")
-        if base_url:
-            print(f"API Endpoint: {base_url}")
+        print(f"Mode: {token_type.upper()}")
+        
+        # Token type specific handling
+        if token_type == "api_key":
+            # Task 9.4: API Key warning box
+            print("┌────────────────────────────────────────────┐")
+            print("│ ⚠️  API Key mode: costs charged directly   │")
+            print("│ Set budget at: console.anthropic.com      │")
+            print("└────────────────────────────────────────────┘")
+        elif token_type == "proxy":
+            # Task 9.2: Early Proxy configuration validation
+            is_valid, error_msg = validate_proxy_config()
+            if not is_valid:
+                print(f"Error: {error_msg}")
+                return False
+            print(f"Endpoint: {os.environ.get('ANTHROPIC_BASE_URL')}")
+        else:
+            # OAuth mode - show custom base URL if set
+            base_url = os.environ.get("ANTHROPIC_BASE_URL")
+            if base_url:
+                print(f"API Endpoint: {base_url}")
 
     # Check for spec.md in spec directory
     spec_file = spec_dir / "spec.md"

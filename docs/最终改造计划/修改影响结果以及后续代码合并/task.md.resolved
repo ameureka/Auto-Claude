@@ -1,0 +1,76 @@
+# CLI 多认证支持方案 - 任务执行追踪
+
+## 任务来源
+- Specs: `/Auto-Claude/docs/最终改造计划/specs/方案1-CLI代理模式/`
+
+---
+
+## ✅ 所有任务已完成 (31/31 tests passed)
+
+- [x] 1. 修改 AuthModule 常量和基础函数 ✅
+  - [x] 1.1 扩展 AUTH_TOKEN_ENV_VARS 列表
+  - [x] 1.2 扩展 SDK_ENV_VARS 列表
+  - [x] 1.3 实现 get_token_type 函数
+  - [x] 1.4 编写属性测试: Token 分类正确性 (7 tests)
+
+- [x] 2. 实现类型特定环境注入 ✅
+  - [x] 2.1 实现 apply_auth_env 函数
+  - [x] 2.2 编写属性测试: 类型特定注入 (4 tests)
+  - [x] 2.3 编写属性测试: 冲突变量清理 (4 tests)
+  - [x] 2.4 实现 is_api_key_mode 辅助函数
+  - [x] 2.5 编写属性测试: 优先级解析确定性 (5 tests)
+
+- [x] 3. 实现 Proxy 配置验证 ✅
+  - [x] 3.1 实现 validate_proxy_config 函数
+  - [x] 3.2 编写属性测试: Proxy 验证完整性 (5 tests)
+
+- [x] 4. 修改错误消息 ✅
+  - [x] 4.1 更新 require_auth_token 错误消息
+
+- [x] 5. Checkpoint - AuthModule 完成 ✅
+
+- [x] 6. 修改 ClientFactory ✅
+  - [x] 6.1 更新 create_client 函数导入
+  - [x] 6.2 实现类型特定认证注入
+  - [x] 6.3 添加 Proxy 配置校验
+  - [x] 6.4 添加认证模式警告
+
+- [x] 7. 修改 SimpleClientFactory ✅
+  - [x] 7.1 更新 create_simple_client 函数导入
+  - [x] 7.2 实现类型特定认证注入
+
+- [x] 8. Checkpoint - ClientFactories 完成 ✅
+
+- [x] 9. 修改 CLIValidator (早期验证) ✅
+  - [x] 9.1 更新 validate_environment 函数导入
+  - [x] 9.2 实现早期 Proxy 配置校验
+  - [x] 9.3 实现认证模式显示
+  - [x] 9.4 添加 API Key 警告框
+  - [x] 9.5 更新无 Token 错误消息
+
+- [x] 10. Checkpoint - CLIValidator 完成 ✅
+
+- [x] 11. 编写集成测试 ✅
+  - [x] 11.1 编写 OAuth 模式集成测试 (1 test)
+  - [x] 11.2 编写 API Key 模式集成测试 (1 test)
+  - [x] 11.3 编写 Proxy 模式集成测试 (2 tests)
+  - [x] 11.4 编写属性测试: 向后兼容性 (2 tests)
+
+- [x] 12. 更新 .env.example ✅
+  - [x] 12.1 添加认证配置示例
+
+- [x] 13. 最终 Checkpoint - 确保所有测试通过 ✅
+
+---
+
+## 修改文件汇总
+
+| 文件 | 操作 | 说明 |
+|------|------|------|
+| `apps/backend/core/auth.py` | 验证已存在 | Task 1-4 功能已实现 |
+| `apps/backend/core/client.py` | 验证已存在 | Task 6 功能已实现 |
+| `apps/backend/core/simple_client.py` | 验证已存在 | Task 7 功能已实现 |
+| `apps/backend/cli/utils.py` | **修改** | Task 9 新增早期验证逻辑 |
+| `apps/backend/.env.example` | **修改** | Task 12 更新认证配置 |
+| `tests/requirements-test.txt` | **修改** | 添加 hypothesis>=6.0.0 |
+| `tests/test_auth_properties.py` | **新增** | 31 个属性测试和集成测试 |
