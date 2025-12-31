@@ -91,7 +91,7 @@ cat roadmap_discovery.json
 cat project_index.json
 
 # Check for existing features or TODOs
-grep -r "TODO\|FEATURE\|IDEA" --include="*.md" . 2>/dev/null | head -30
+grep -r "TODO\|FEATURE\|IDEA" --include="*.md" --exclude-dir={node_modules,.git,.next,dist,build,.venv} . 2>/dev/null | head -30
 
 # Check for competitor analysis data (if enabled by user)
 cat competitor_analysis.json 2>/dev/null || echo "No competitor analysis available"

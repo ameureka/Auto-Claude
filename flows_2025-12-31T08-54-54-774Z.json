@@ -1,0 +1,1113 @@
+[
+  {
+    "annotations": {
+      "starred": false,
+      "tags": []
+    },
+    "error": {
+      "error_type": "network",
+      "message": "error decoding response body",
+      "retryable": false,
+      "timestamp": "2025-12-31T08:53:23.999430Z"
+    },
+    "flow_type": "AnthropicMessages",
+    "id": "09074d0c-166a-485d-a3ee-f7f9c6858588",
+    "metadata": {
+      "client_info": {
+        "request_id": "9adf662b-9163-489a-9f27-16cfd3b56c6b",
+        "user_agent": "claude-cli/2.0.72 (external, sdk-py, agent-sdk/0.1.18)"
+      },
+      "provider": "kiro",
+      "retry_count": 0,
+      "routing_info": {}
+    },
+    "request": {
+      "body": {
+        "max_tokens": 21333,
+        "messages": [
+          {
+            "content": "## YOUR ROLE - ROADMAP FEATURE GENERATOR AGENT\n\nYou are the **Roadmap Feature Generator Agent** in the Auto-Build framework. Your job is to analyze the project discovery data and generate a strategic list of features, prioritized and organized into phases.\n\n**Key Principle**: Generate valuable, actionable features based on user needs and product vision. Prioritize ruthlessly.\n\n---\n\n## YOUR CONTRACT\n\n**Input**:\n- `roadmap_discovery.json` (project understanding)\n- `project_index.json` (codebase structure)\n- `competitor_analysis.json` (optional - competitor insights if available)\n\n**Output**: `roadmap.json` (complete roadmap with prioritized features)\n\nYou MUST create `roadmap.json` with this EXACT structure:\n\n```json\n{\n  \"id\": \"roadmap-[timestamp]\",\n  \"project_name\": \"Name of the project\",\n  \"version\": \"1.0\",\n  \"vision\": \"Product vision one-liner\",\n  \"target_audience\": {\n    \"primary\": \"Primary persona\",\n    \"secondary\": [\"Secondary personas\"]\n  },\n  \"phases\": [\n    {\n      \"id\": \"phase-1\",\n      \"name\": \"Foundation / MVP\",\n      \"description\": \"What this phase achieves\",\n      \"order\": 1,\n      \"status\": \"planned\",\n      \"features\": [\"feature-id-1\", \"feature-id-2\"],\n      \"milestones\": [\n        {\n          \"id\": \"milestone-1-1\",\n          \"title\": \"Milestone name\",\n          \"description\": \"What this milestone represents\",\n          \"features\": [\"feature-id-1\"],\n          \"status\": \"planned\"\n        }\n      ]\n    }\n  ],\n  \"features\": [\n    {\n      \"id\": \"feature-1\",\n      \"title\": \"Feature name\",\n      \"description\": \"What this feature does\",\n      \"rationale\": \"Why this feature matters for the target audience\",\n      \"priority\": \"must\",\n      \"complexity\": \"medium\",\n      \"impact\": \"high\",\n      \"phase_id\": \"phase-1\",\n      \"dependencies\": [],\n      \"status\": \"idea\",\n      \"acceptance_criteria\": [\n        \"Criterion 1\",\n        \"Criterion 2\"\n      ],\n      \"user_stories\": [\n        \"As a [user], I want to [action] so that [benefit]\"\n      ],\n      \"competitor_insight_ids\": [\"insight-id-1\"]\n    }\n  ],\n  \"metadata\": {\n    \"created_at\": \"ISO timestamp\",\n    \"updated_at\": \"ISO timestamp\",\n    \"generated_by\": \"roadmap_features agent\",\n    \"prioritization_framework\": \"MoSCoW\"\n  }\n}\n```\n\n**DO NOT** proceed without creating this file.\n\n---\n\n## PHASE 0: LOAD CONTEXT\n\n```bash\n# Read discovery data\ncat roadmap_discovery.json\n\n# Read project structure\ncat project_index.json\n\n# Check for existing features or TODOs\ngrep -r \"TODO\\|FEATURE\\|IDEA\" --include=\"*.md\" . 2>/dev/null | head -30\n\n# Check for competitor analysis data (if enabled by user)\ncat competitor_analysis.json 2>/dev/null || echo \"No competitor analysis available\"\n```\n\nExtract key information:\n- Target audience and their pain points\n- Product vision and value proposition\n- Current features and gaps\n- Constraints and dependencies\n- Competitor pain points and market gaps (if competitor_analysis.json exists)\n\n---\n\n## PHASE 1: FEATURE BRAINSTORMING\n\nBased on the discovery data, generate features that address:\n\n### 1.1 User Pain Points\nFor each pain point in `target_audience.pain_points`, consider:\n- What feature would directly address this?\n- What's the minimum viable solution?\n\n### 1.2 User Goals\nFor each goal in `target_audience.goals`, consider:\n- What features help users achieve this goal?\n- What workflow improvements would help?\n\n### 1.3 Known Gaps\nFor each gap in `current_state.known_gaps`, consider:\n- What feature would fill this gap?\n- Is this a must-have or nice-to-have?\n\n### 1.4 Competitive Differentiation\nBased on `competitive_context.differentiators`, consider:\n- What features would strengthen these differentiators?\n- What features would help win against alternatives?\n\n### 1.5 Technical Improvements\nBased on `current_state.technical_debt`, consider:\n- What refactoring or improvements are needed?\n- What would improve developer experience?\n\n### 1.6 Competitor Pain Points (if competitor_analysis.json exists)\n\n**IMPORTANT**: If `competitor_analysis.json` is available, this becomes a HIGH-PRIORITY source for feature ideas.\n\nFor each pain point in `competitor_analysis.json` → `insights_summary.top_pain_points`, consider:\n- What feature would directly address this pain point better than competitors?\n- Can we turn competitor weaknesses into our strengths?\n- What market gaps (from `market_gaps`) can we fill?\n\nFor each competitor in `competitor_analysis.json` → `competitors`:\n- Review their `pain_points` array for user frustrations\n- Use the `id` of each pain point for the `competitor_insight_ids` field when creating features\n\n**Linking Features to Competitor Insights**:\nWhen a feature addresses a competitor pain point:\n1. Add the pain point's `id` to the feature's `competitor_insight_ids` array\n2. Reference the competitor and pain point in the feature's `rationale`\n3. Consider boosting the feature's priority if it addresses multiple competitor weaknesses\n\n---\n\n## PHASE 2: PRIORITIZATION (MoSCoW)\n\nApply MoSCoW prioritization to each feature:\n\n**MUST HAVE** (priority: \"must\")\n- Critical for MVP or current phase\n- Users cannot function without this\n- Legal/compliance requirements\n- **Addresses critical competitor pain points** (if competitor_analysis.json exists)\n\n**SHOULD HAVE** (priority: \"should\")\n- Important but not critical\n- Significant value to users\n- Can wait for next phase if needed\n- **Addresses common competitor pain points** (if competitor_analysis.json exists)\n\n**COULD HAVE** (priority: \"could\")\n- Nice to have, enhances experience\n- Can be descoped without major impact\n- Good for future phases\n\n**WON'T HAVE** (priority: \"wont\")\n- Not planned for foreseeable future\n- Out of scope for current vision\n- Document for completeness but don't plan\n\n---\n\n## PHASE 3: COMPLEXITY & IMPACT ASSESSMENT\n\nFor each feature, assess:\n\n### Complexity (Low/Medium/High)\n- **Low**: 1-2 files, single component, < 1 day\n- **Medium**: 3-10 files, multiple components, 1-3 days\n- **High**: 10+ files, architectural changes, > 3 days\n\n### Impact (Low/Medium/High)\n- **High**: Core user need, differentiator, revenue driver, **addresses competitor pain points**\n- **Medium**: Improves experience, addresses secondary needs\n- **Low**: Edge cases, polish, nice-to-have\n\n### Priority Matrix\n```\nHigh Impact + Low Complexity = DO FIRST (Quick Wins)\nHigh Impact + High Complexity = PLAN CAREFULLY (Big Bets)\nLow Impact + Low Complexity = DO IF TIME (Fill-ins)\nLow Impact + High Complexity = AVOID (Time Sinks)\n```\n\n---\n\n## PHASE 4: PHASE ORGANIZATION\n\nOrganize features into logical phases:\n\n### Phase 1: Foundation / MVP\n- Must-have features\n- Core functionality\n- Quick wins (high impact + low complexity)\n\n### Phase 2: Enhancement\n- Should-have features\n- User experience improvements\n- Medium complexity features\n\n### Phase 3: Scale / Growth\n- Could-have features\n- Advanced functionality\n- Performance optimizations\n\n### Phase 4: Future / Vision\n- Long-term features\n- Experimental ideas\n- Market expansion features\n\n---\n\n## PHASE 5: DEPENDENCY MAPPING\n\nIdentify dependencies between features:\n\n```\nFeature A depends on Feature B if:\n- A requires B's functionality to work\n- A modifies code that B creates\n- A uses APIs that B introduces\n```\n\nEnsure dependencies are reflected in phase ordering.\n\n---\n\n## PHASE 6: MILESTONE CREATION\n\nCreate meaningful milestones within each phase:\n\nGood milestones are:\n- **Demonstrable**: Can show progress to stakeholders\n- **Testable**: Can verify completion\n- **Valuable**: Deliver user value, not just code\n\nExample milestones:\n- \"Users can create and save documents\"\n- \"Payment processing is live\"\n- \"Mobile app is on App Store\"\n\n---\n\n## PHASE 7: CREATE ROADMAP.JSON (MANDATORY)\n\n**You MUST create this file. The orchestrator will fail if you don't.**\n\n```bash\ncat > roadmap.json << 'EOF'\n{\n  \"id\": \"roadmap-[TIMESTAMP]\",\n  \"project_name\": \"[from discovery]\",\n  \"version\": \"1.0\",\n  \"vision\": \"[from discovery.product_vision.one_liner]\",\n  \"target_audience\": {\n    \"primary\": \"[from discovery]\",\n    \"secondary\": [\"[from discovery]\"]\n  },\n  \"phases\": [\n    {\n      \"id\": \"phase-1\",\n      \"name\": \"Foundation\",\n      \"description\": \"[description of this phase]\",\n      \"order\": 1,\n      \"status\": \"planned\",\n      \"features\": [\"[feature-ids]\"],\n      \"milestones\": [\n        {\n          \"id\": \"milestone-1-1\",\n          \"title\": \"[milestone title]\",\n          \"description\": \"[what this achieves]\",\n          \"features\": [\"[feature-ids]\"],\n          \"status\": \"planned\"\n        }\n      ]\n    }\n  ],\n  \"features\": [\n    {\n      \"id\": \"feature-1\",\n      \"title\": \"[Feature Title]\",\n      \"description\": \"[What it does]\",\n      \"rationale\": \"[Why it matters - include competitor pain point reference if applicable]\",\n      \"priority\": \"must|should|could|wont\",\n      \"complexity\": \"low|medium|high\",\n      \"impact\": \"low|medium|high\",\n      \"phase_id\": \"phase-1\",\n      \"dependencies\": [],\n      \"status\": \"idea\",\n      \"acceptance_criteria\": [\n        \"[Criterion 1]\",\n        \"[Criterion 2]\"\n      ],\n      \"user_stories\": [\n        \"As a [user], I want to [action] so that [benefit]\"\n      ],\n      \"competitor_insight_ids\": []\n    }\n  ],\n  \"metadata\": {\n    \"created_at\": \"[ISO timestamp]\",\n    \"updated_at\": \"[ISO timestamp]\",\n    \"generated_by\": \"roadmap_features agent\",\n    \"prioritization_framework\": \"MoSCoW\",\n    \"competitor_analysis_used\": false\n  }\n}\nEOF\n```\n\n**Note**: Set `competitor_analysis_used: true` in metadata if competitor_analysis.json was incorporated.\n\nVerify the file was created:\n\n```bash\ncat roadmap.json | head -100\n```\n\n---\n\n## PHASE 8: USER REVIEW\n\nPresent the roadmap to the user for review:\n\n> \"I've generated a roadmap with **[X] features** across **[Y] phases**.\n>\n> **Phase 1 - Foundation** ([Z] features):\n> [List key features with priorities]\n>\n> **Phase 2 - Enhancement** ([Z] features):\n> [List key features]\n>\n> Would you like to:\n> 1. Review and approve this roadmap\n> 2. Adjust priorities for any features\n> 3. Add additional features I may have missed\n> 4. Remove features that aren't relevant\"\n\nIncorporate feedback and update roadmap.json if needed.\n\n---\n\n## VALIDATION\n\nAfter creating roadmap.json, verify:\n\n1. Is it valid JSON?\n2. Does it have at least one phase?\n3. Does it have at least 3 features?\n4. Do all features have required fields (id, title, priority)?\n5. Are all feature IDs referenced in phases valid?\n\n---\n\n## COMPLETION\n\nSignal completion:\n\n```\n=== ROADMAP GENERATED ===\n\nProject: [name]\nVision: [one_liner]\nPhases: [count]\nFeatures: [count]\nCompetitor Analysis Used: [yes/no]\nFeatures Addressing Competitor Pain Points: [count]\n\nBreakdown by priority:\n- Must Have: [count]\n- Should Have: [count]\n- Could Have: [count]\n\nroadmap.json created successfully.\n```\n\n---\n\n## CRITICAL RULES\n\n1. **Generate at least 5-10 features** - A useful roadmap has actionable items\n2. **Every feature needs rationale** - Explain why it matters\n3. **Prioritize ruthlessly** - Not everything is a \"must have\"\n4. **Consider dependencies** - Don't plan impossible sequences\n5. **Include acceptance criteria** - Make features testable\n6. **Use user stories** - Connect features to user value\n7. **Leverage competitor analysis** - If `competitor_analysis.json` exists, prioritize features that address competitor pain points and include `competitor_insight_ids` to link features to specific insights\n\n---\n\n## FEATURE TEMPLATE\n\nFor each feature, ensure you capture:\n\n```json\n{\n  \"id\": \"feature-[number]\",\n  \"title\": \"Clear, action-oriented title\",\n  \"description\": \"2-3 sentences explaining the feature\",\n  \"rationale\": \"Why this matters for [primary persona]\",\n  \"priority\": \"must|should|could|wont\",\n  \"complexity\": \"low|medium|high\",\n  \"impact\": \"low|medium|high\",\n  \"phase_id\": \"phase-N\",\n  \"dependencies\": [\"feature-ids this depends on\"],\n  \"status\": \"idea\",\n  \"acceptance_criteria\": [\n    \"Given [context], when [action], then [result]\",\n    \"Users can [do thing]\",\n    \"[Metric] improves by [amount]\"\n  ],\n  \"user_stories\": [\n    \"As a [persona], I want to [action] so that [benefit]\"\n  ],\n  \"competitor_insight_ids\": [\"pain-point-id-1\", \"pain-point-id-2\"]\n}\n```\n\n**Note on `competitor_insight_ids`**:\n- This field is **optional** - only include when the feature addresses competitor pain points\n- The IDs should reference pain point IDs from `competitor_analysis.json` → `competitors[].pain_points[].id`\n- Features with `competitor_insight_ids` gain priority boost in the roadmap\n- Use empty array `[]` if the feature doesn't address any competitor insights\n\n---\n\n## BEGIN\n\nStart by reading roadmap_discovery.json to understand the project context, then systematically generate and prioritize features.\n\n\n---\n\n**Output Directory**: /Users/ameureka/Desktop/v0-mksaas-analycis-1/.auto-claude/roadmap\n**Project Directory**: /Users/ameureka/Desktop/v0-mksaas-analycis-1\n\n\n**Discovery File**: /Users/ameureka/Desktop/v0-mksaas-analycis-1/.auto-claude/roadmap/roadmap_discovery.json\n**Project Index**: /Users/ameureka/Desktop/v0-mksaas-analycis-1/.auto-claude/roadmap/project_index.json\n**Output File**: /Users/ameureka/Desktop/v0-mksaas-analycis-1/.auto-claude/roadmap/roadmap.json\n\nBased on the discovery data:\n1. Generate features that address user pain points\n2. Prioritize using MoSCoW framework\n3. Organize into phases\n4. Create milestones\n5. Map dependencies\n\nOutput the complete roadmap to roadmap.json.\n\n",
+            "role": "user"
+          },
+          {
+            "content": [
+              {
+                "text": "I'll start by loading the context from the discovery files to understand the project and generate a strategic roadmap.",
+                "type": "text"
+              },
+              {
+                "id": "tooluse_WrY15rm1TL6MIFZP1L9t7g",
+                "input": {
+                  "file_path": "/Users/ameureka/Desktop/v0-mksaas-analycis-1/.auto-claude/roadmap/roadmap_discovery.json"
+                },
+                "name": "Read",
+                "type": "tool_use"
+              },
+              {
+                "id": "tooluse_5Q8tPsgiSi23V7dfdHvcaQ",
+                "input": {
+                  "file_path": "/Users/ameureka/Desktop/v0-mksaas-analycis-1/.auto-claude/roadmap/project_index.json"
+                },
+                "name": "Read",
+                "type": "tool_use"
+              }
+            ],
+            "role": "assistant"
+          },
+          {
+            "content": [
+              {
+                "content": "     1→{\n     2→  \"project_name\": \"Ameureka V0 - Vibe Coding Engineering Lab\",\n     3→  \"project_type\": \"monorepo\",\n     4→  \"tech_stack\": {\n     5→    \"primary_language\": \"TypeScript\",\n     6→    \"frameworks\": [\n     7→      \"Next.js 15\",\n     8→      \"React 19\",\n     9→      \"Express\",\n    10→      \"Electron\"\n    11→    ],\n    12→    \"key_dependencies\": [\n    13→      \"Drizzle ORM\",\n    14→      \"TailwindCSS\",\n    15→      \"Stripe\",\n    16→      \"AI SDK (OpenAI, Google, DeepSeek, Fireworks)\",\n    17→      \"@anthropic-ai/claude-agent-sdk\",\n    18→      \"@modelcontextprotocol/sdk\",\n    19→      \"better-auth\",\n    20→      \"Zustand\",\n    21→      \"Vitest\"\n    22→    ]\n    23→  },\n    24→  \"target_audience\": {\n    25→    \"primary_persona\": \"AI-augmented developers (Vibe Coders) who want to evolve from manual coding to directing AI agents for software development\",\n    26→    \"secondary_personas\": [\n    27→      \"Solo developers building SaaS products with AI assistance\",\n    28→      \"Technical founders exploring AI-first development workflows\",\n    29→      \"Content creators needing AI-powered PPT templates\",\n    30→      \"Developers interested in LLM memory and context persistence\"\n    31→    ],\n    32→    \"pain_points\": [\n    33→      \"LLM context window limitations causing loss of project knowledge across sessions\",\n    34→      \"Black-box AI code generation without structured pipelines\",\n    35→      \"Difficulty maintaining consistency in AI-assisted development\",\n    36→      \"Manual repetitive coding tasks that could be automated\",\n    37→      \"Lack of structured methodology for AI-human collaboration in coding\"\n    38→    ],\n    39→    \"goals\": [\n    40→      \"Transition from 'Coder' to 'Foreman' role - directing AI rather than writing code\",\n    41→      \"Build production-quality SaaS products faster with AI assistance\",\n    42→      \"Maintain project context and knowledge across AI sessions\",\n    43→      \"Implement structured development pipelines (Specs -> Plan -> Implement -> Verify)\",\n    44→      \"Access AI-generated PPT templates for presentations\"\n    45→    ],\n    46→    \"usage_context\": \"Professional development environment where developers use Claude/AI agents for complex multi-step coding tasks, requiring persistent memory and structured workflows\"\n    47→  },\n    48→  \"product_vision\": {\n    49→    \"one_liner\": \"A comprehensive engineering lab for practicing and evolving 'Vibe Coding' methodology - producing software that writes software\",\n    50→    \"problem_statement\": \"Traditional AI code generation is a black box that loses context between sessions, lacks structured pipelines, and doesn't support the evolution of developers from coders to AI directors (Foremen)\",\n    51→    \"value_proposition\": \"Provides a complete ecosystem for AI-augmented development: memory persistence (claude-mem), structured pipelines (Auto-Claude), and a flagship SaaS product (PPTHub) to validate the methodology\",\n    52→    \"success_metrics\": [\n    53→      \"Successful cross-session context retrieval rate in claude-mem\",\n    54→      \"Reduction in repetitive prompting due to memory system\",\n    55→      \"PPTHub user adoption and revenue (Stripe payments)\",\n    56→      \"Developer productivity improvement using Conductor mode\",\n    57→      \"Quality of AI-generated code following Spec-First protocol\"\n    58→    ]\n    59→  },\n    60→  \"current_state\": {\n    61→    \"maturity\": \"mvp\",\n    62→    \"existing_features\": [\n    63→      \"claude-mem: Memory compression system with 57 API routes for context persistence\",\n    64→      \"PPTHub (mvp-code-ai-ppt-site): Full SaaS with auth, payments (Stripe), AI PPT generation\",\n    65→      \"Database schema with 13 models (users, sessions, payments, credits, PPTs, etc.)\",\n    66→      \"Multi-AI provider support (OpenAI, Google, DeepSeek, Fireworks, Replicate)\",\n    67→      \"Internationalization (next-intl)\",\n    68→      \"Email templates (react-email, Resend)\",\n    69→      \"Search functionality with hot keywords and embeddings\",\n    70→      \"Credit system with ad-watch rewards\",\n    71→      \"pro-Auto-Claude: CLI platform for automation (in development)\"\n    72→    ],\n    73→    \"known_gaps\": [\n    74→      \"pro-Auto-Claude needs refactoring from scattered scripts to unified CLI\",\n    75→      \"Documentation (ebook) is incomplete\",\n    76→      \"Integration between claude-mem and main SaaS product needs strengthening\",\n    77→      \"E2E testing coverage could be expanded\"\n    78→    ],\n    79→    \"technical_debt\": [\n    80→      \"Scattered automation scripts need consolidation into pro-Auto-Claude\",\n    81→      \"Knowledge documentation spread across multiple directories needs organization\",\n    82→      \"Some prototype tools in '000-vibecoding 基础设施' need productionization\"\n    83→    ]\n    84→  },\n    85→  \"competitive_context\": {\n    86→    \"alternatives\": [\n    87→      \"Cursor IDE - AI-powered code editor\",\n    88→      \"GitHub Copilot - AI pair programming\",\n    89→      \"Replit Agent - AI development environment\",\n    90→      \"v0.dev - AI UI generation\",\n    91→      \"Canva/Beautiful.ai - PPT generation tools\"\n    92→    ],\n    93→    \"differentiators\": [\n    94→      \"Vibe Coding methodology - structured approach to AI-human collaboration\",\n    95→      \"Persistent memory system (claude-mem) for cross-session context\",\n    96→      \"Conductor mode pipeline (Specs -> Plan -> Implement -> Verify)\",\n    97→      \"Dual AI calibration (Builder + Breaker) for quality assurance\",\n    98→      \"Open methodology with documented theory and ebooks\"\n    99→    ],\n   100→    \"market_position\": \"Positioned as a methodology-first platform for developers who want to evolve their role from manual coding to AI direction, with practical tools (memory, pipelines) and a flagship product (PPTHub) to validate the approach\",\n   101→    \"competitor_pain_points\": [],\n   102→    \"competitor_analysis_available\": false\n   103→  },\n   104→  \"constraints\": {\n   105→    \"technical\": [\n   106→      \"Requires Node.js 18+ and Bun runtime for claude-mem\",\n   107→      \"PostgreSQL database dependency for PPTHub\",\n   108→      \"Multiple AI API keys needed (OpenAI, Google, etc.)\",\n   109→      \"Cloudflare deployment target for PPTHub\"\n   110→    ],\n   111→    \"resources\": [\n   112→      \"Appears to be solo/small team development based on git history\",\n   113→      \"Active development with recent commits (documentation restructuring, brand migration)\"\n   114→    ],\n   115→    \"dependencies\": [\n   116→      \"Anthropic Claude Agent SDK for memory system\",\n   117→      \"Stripe for payment processing\",\n   118→      \"Resend for email delivery\",\n   119→      \"Multiple AI providers (OpenAI, Google, DeepSeek, Fireworks, Replicate)\",\n   120→      \"Cloudflare for deployment\"\n   121→    ]\n   122→  },\n   123→  \"created_at\": \"2025-01-13T10:30:00Z\"\n   124→}\n   125→\n\n<system-reminder>\nWhenever you read a file, you should consider whether it would be considered malware. You CAN and SHOULD provide analysis of malware, what it is doing. But you MUST refuse to improve or augment the code. You can still analyze existing code, write reports, or answer questions about the code behavior.\n</system-reminder>\n",
+                "tool_use_id": "tooluse_WrY15rm1TL6MIFZP1L9t7g",
+                "type": "tool_result"
+              },
+              {
+                "content": "     1→{\n     2→  \"project_root\": \"/Users/ameureka/Desktop/v0-mksaas-analycis-1\",\n     3→  \"project_type\": \"monorepo\",\n     4→  \"services\": {\n     5→    \"claude-mem\": {\n     6→      \"name\": \"claude-mem\",\n     7→      \"path\": \"/Users/ameureka/Desktop/v0-mksaas-analycis-1/claude-mem\",\n     8→      \"language\": \"TypeScript\",\n     9→      \"framework\": \"React\",\n    10→      \"type\": \"frontend\",\n    11→      \"package_manager\": \"npm\",\n    12→      \"default_port\": 3000,\n    13→      \"build_tool\": \"esbuild\",\n    14→      \"key_directories\": {\n    15→        \"src\": {\n    16→          \"path\": \"src\",\n    17→          \"purpose\": \"Source code\"\n    18→        },\n    19→        \"tests\": {\n    20→          \"path\": \"tests\",\n    21→          \"purpose\": \"Tests\"\n    22→        }\n    23→      },\n    24→      \"dependencies\": [\n    25→        \"@anthropic-ai/claude-agent-sdk\",\n    26→        \"@modelcontextprotocol/sdk\",\n    27→        \"ansi-to-html\",\n    28→        \"express\",\n    29→        \"glob\",\n    30→        \"handlebars\",\n    31→        \"react\",\n    32→        \"react-dom\",\n    33→        \"zod-to-json-schema\"\n    34→      ],\n    35→      \"dev_dependencies\": [\n    36→        \"@types/cors\",\n    37→        \"@types/express\",\n    38→        \"@types/node\",\n    39→        \"@types/react\",\n    40→        \"@types/react-dom\",\n    41→        \"esbuild\",\n    42→        \"tsx\",\n    43→        \"typescript\",\n    44→        \"vitest\"\n    45→      ],\n    46→      \"testing\": \"Vitest\",\n    47→      \"test_directory\": \"tests\",\n    48→      \"api\": {\n    49→        \"routes\": [\n    50→          {\n    51→            \"path\": \"/api/health\",\n    52→            \"methods\": [\n    53→              \"GET\"\n    54→            ],\n    55→            \"file\": \"src/services/worker-service.ts\",\n    56→            \"framework\": \"Express\",\n    57→            \"requires_auth\": false\n    58→          },\n    59→          {\n    60→            \"path\": \"/api/readiness\",\n    61→            \"methods\": [\n    62→              \"GET\"\n    63→            ],\n    64→            \"file\": \"src/services/worker-service.ts\",\n    65→            \"framework\": \"Express\",\n    66→            \"requires_auth\": false\n    67→          },\n    68→          {\n    69→            \"path\": \"/api/version\",\n    70→            \"methods\": [\n    71→              \"GET\"\n    72→            ],\n    73→            \"file\": \"src/services/worker-service.ts\",\n    74→            \"framework\": \"Express\",\n    75→            \"requires_auth\": false\n    76→          },\n    77→          {\n    78→            \"path\": \"/api/instructions\",\n    79→            \"methods\": [\n    80→              \"GET\"\n    81→            ],\n    82→            \"file\": \"src/services/worker-service.ts\",\n    83→            \"framework\": \"Express\",\n    84→            \"requires_auth\": false\n    85→          },\n    86→          {\n    87→            \"path\": \"/api/admin/restart\",\n    88→            \"methods\": [\n    89→              \"POST\"\n    90→            ],\n    91→            \"file\": \"src/services/worker-service.ts\",\n    92→            \"framework\": \"Express\",\n    93→            \"requires_auth\": true\n    94→          },\n    95→          {\n    96→            \"path\": \"/api/admin/shutdown\",\n    97→            \"methods\": [\n    98→              \"POST\"\n    99→            ],\n   100→            \"file\": \"src/services/worker-service.ts\",\n   101→            \"framework\": \"Express\",\n   102→            \"requires_auth\": true\n   103→          },\n   104→          {\n   105→            \"path\": \"/api/context/inject\",\n   106→            \"methods\": [\n   107→              \"GET\"\n   108→            ],\n   109→            \"file\": \"src/services/worker-service.ts\",\n   110→            \"framework\": \"Express\",\n   111→            \"requires_auth\": false\n   112→          },\n   113→          {\n   114→            \"path\": \"/api/search\",\n   115→            \"methods\": [\n   116→              \"GET\"\n   117→            ],\n   118→            \"file\": \"src/services/worker/http/routes/SearchRoutes.ts\",\n   119→            \"framework\": \"Express\",\n   120→            \"requires_auth\": false\n   121→          },\n   122→          {\n   123→            \"path\": \"/api/timeline\",\n   124→            \"methods\": [\n   125→              \"GET\"\n   126→            ],\n   127→            \"file\": \"src/services/worker/http/routes/SearchRoutes.ts\",\n   128→            \"framework\": \"Express\",\n   129→            \"requires_auth\": false\n   130→          },\n   131→          {\n   132→            \"path\": \"/api/decisions\",\n   133→            \"methods\": [\n   134→              \"GET\"\n   135→            ],\n   136→            \"file\": \"src/services/worker/http/routes/SearchRoutes.ts\",\n   137→            \"framework\": \"Express\",\n   138→            \"requires_auth\": false\n   139→          },\n   140→          {\n   141→            \"path\": \"/api/changes\",\n   142→            \"methods\": [\n   143→              \"GET\"\n   144→            ],\n   145→            \"file\": \"src/services/worker/http/routes/SearchRoutes.ts\",\n   146→            \"framework\": \"Express\",\n   147→            \"requires_auth\": false\n   148→          },\n   149→          {\n   150→            \"path\": \"/api/how-it-works\",\n   151→            \"methods\": [\n   152→              \"GET\"\n   153→            ],\n   154→            \"file\": \"src/services/worker/http/routes/SearchRoutes.ts\",\n   155→            \"framework\": \"Express\",\n   156→            \"requires_auth\": false\n   157→          },\n   158→          {\n   159→            \"path\": \"/api/search/observations\",\n   160→            \"methods\": [\n   161→              \"GET\"\n   162→            ],\n   163→            \"file\": \"src/services/worker/http/routes/SearchRoutes.ts\",\n   164→            \"framework\": \"Express\",\n   165→            \"requires_auth\": false\n   166→          },\n   167→          {\n   168→            \"path\": \"/api/search/sessions\",\n   169→            \"methods\": [\n   170→              \"GET\"\n   171→            ],\n   172→            \"file\": \"src/services/worker/http/routes/SearchRoutes.ts\",\n   173→            \"framework\": \"Express\",\n   174→            \"requires_auth\": false\n   175→          },\n   176→          {\n   177→            \"path\": \"/api/search/prompts\",\n   178→            \"methods\": [\n   179→              \"GET\"\n   180→            ],\n   181→            \"file\": \"src/services/worker/http/routes/SearchRoutes.ts\",\n   182→            \"framework\": \"Express\",\n   183→            \"requires_auth\": false\n   184→          },\n   185→          {\n   186→            \"path\": \"/api/search/by-concept\",\n   187→            \"methods\": [\n   188→              \"GET\"\n   189→            ],\n   190→            \"file\": \"src/services/worker/http/routes/SearchRoutes.ts\",\n   191→            \"framework\": \"Express\",\n   192→            \"requires_auth\": false\n   193→          },\n   194→          {\n   195→            \"path\": \"/api/search/by-file\",\n   196→            \"methods\": [\n   197→              \"GET\"\n   198→            ],\n   199→            \"file\": \"src/services/worker/http/routes/SearchRoutes.ts\",\n   200→            \"framework\": \"Express\",\n   201→            \"requires_auth\": false\n   202→          },\n   203→          {\n   204→            \"path\": \"/api/search/by-type\",\n   205→            \"methods\": [\n   206→              \"GET\"\n   207→            ],\n   208→            \"file\": \"src/services/worker/http/routes/SearchRoutes.ts\",\n   209→            \"framework\": \"Express\",\n   210→            \"requires_auth\": false\n   211→          },\n   212→          {\n   213→            \"path\": \"/api/context/recent\",\n   214→            \"methods\": [\n   215→              \"GET\"\n   216→            ],\n   217→            \"file\": \"src/services/worker/http/routes/SearchRoutes.ts\",\n   218→            \"framework\": \"Express\",\n   219→            \"requires_auth\": false\n   220→          },\n   221→          {\n   222→            \"path\": \"/api/context/timeline\",\n   223→            \"methods\": [\n   224→              \"GET\"\n   225→            ],\n   226→            \"file\": \"src/services/worker/http/routes/SearchRoutes.ts\",\n   227→            \"framework\": \"Express\",\n   228→            \"requires_auth\": false\n   229→          },\n   230→          {\n   231→            \"path\": \"/api/context/preview\",\n   232→            \"methods\": [\n   233→              \"GET\"\n   234→            ],\n   235→            \"file\": \"src/services/worker/http/routes/SearchRoutes.ts\",\n   236→            \"framework\": \"Express\",\n   237→            \"requires_auth\": false\n   238→          },\n   239→          {\n   240→            \"path\": \"/api/context/inject\",\n   241→            \"methods\": [\n   242→              \"GET\"\n   243→            ],\n   244→            \"file\": \"src/services/worker/http/routes/SearchRoutes.ts\",\n   245→            \"framework\": \"Express\",\n   246→            \"requires_auth\": false\n   247→          },\n   248→          {\n   249→            \"path\": \"/api/timeline/by-query\",\n   250→            \"methods\": [\n   251→              \"GET\"\n   252→            ],\n   253→            \"file\": \"src/services/worker/http/routes/SearchRoutes.ts\",\n   254→            \"framework\": \"Express\",\n   255→            \"requires_auth\": false\n   256→          },\n   257→          {\n   258→            \"path\": \"/api/search/help\",\n   259→            \"methods\": [\n   260→              \"GET\"\n   261→            ],\n   262→            \"file\": \"src/services/worker/http/routes/SearchRoutes.ts\",\n   263→            \"framework\": \"Express\",\n   264→            \"requires_auth\": false\n   265→          },\n   266→          {\n   267→            \"path\": \"/api/settings\",\n   268→            \"methods\": [\n   269→              \"GET\"\n   270→            ],\n   271→            \"file\": \"src/services/worker/http/routes/SettingsRoutes.ts\",\n   272→            \"framework\": \"Express\",\n   273→            \"requires_auth\": false\n   274→          },\n   275→          {\n   276→            \"path\": \"/api/settings\",\n   277→            \"methods\": [\n   278→              \"POST\"\n   279→            ],\n   280→            \"file\": \"src/services/worker/http/routes/SettingsRoutes.ts\",\n   281→            \"framework\": \"Express\",\n   282→            \"requires_auth\": false\n   283→          },\n   284→          {\n   285→            \"path\": \"/api/mcp/status\",\n   286→            \"methods\": [\n   287→              \"GET\"\n   288→            ],\n   289→            \"file\": \"src/services/worker/http/routes/SettingsRoutes.ts\",\n   290→            \"framework\": \"Express\",\n   291→            \"requires_auth\": false\n   292→          },\n   293→          {\n   294→            \"path\": \"/api/mcp/toggle\",\n   295→            \"methods\": [\n   296→              \"POST\"\n   297→            ],\n   298→            \"file\": \"src/services/worker/http/routes/SettingsRoutes.ts\",\n   299→            \"framework\": \"Express\",\n   300→            \"requires_auth\": false\n   301→          },\n   302→          {\n   303→            \"path\": \"/api/branch/status\",\n   304→            \"methods\": [\n   305→              \"GET\"\n   306→            ],\n   307→            \"file\": \"src/services/worker/http/routes/SettingsRoutes.ts\",\n   308→            \"framework\": \"Express\",\n   309→            \"requires_auth\": false\n   310→          },\n   311→          {\n   312→            \"path\": \"/api/branch/switch\",\n   313→            \"methods\": [\n   314→              \"POST\"\n   315→            ],\n   316→            \"file\": \"src/services/worker/http/routes/SettingsRoutes.ts\",\n   317→            \"framework\": \"Express\",\n   318→            \"requires_auth\": false\n   319→          },\n   320→          {\n   321→            \"path\": \"/api/branch/update\",\n   322→            \"methods\": [\n   323→              \"POST\"\n   324→            ],\n   325→            \"file\": \"src/services/worker/http/routes/SettingsRoutes.ts\",\n   326→            \"framework\": \"Express\",\n   327→            \"requires_auth\": false\n   328→          },\n   329→          {\n   330→            \"path\": \"/api/observations\",\n   331→            \"methods\": [\n   332→              \"GET\"\n   333→            ],\n   334→            \"file\": \"src/services/worker/http/routes/DataRoutes.ts\",\n   335→            \"framework\": \"Express\",\n   336→            \"requires_auth\": false\n   337→          },\n   338→          {\n   339→            \"path\": \"/api/summaries\",\n   340→            \"methods\": [\n   341→              \"GET\"\n   342→            ],\n   343→            \"file\": \"src/services/worker/http/routes/DataRoutes.ts\",\n   344→            \"framework\": \"Express\",\n   345→            \"requires_auth\": false\n   346→          },\n   347→          {\n   348→            \"path\": \"/api/prompts\",\n   349→            \"methods\": [\n   350→              \"GET\"\n   351→            ],\n   352→            \"file\": \"src/services/worker/http/routes/DataRoutes.ts\",\n   353→            \"framework\": \"Express\",\n   354→            \"requires_auth\": false\n   355→          },\n   356→          {\n   357→            \"path\": \"/api/observation/:id\",\n   358→            \"methods\": [\n   359→              \"GET\"\n   360→            ],\n   361→            \"file\": \"src/services/worker/http/routes/DataRoutes.ts\",\n   362→            \"framework\": \"Express\",\n   363→            \"requires_auth\": false\n   364→          },\n   365→          {\n   366→            \"path\": \"/api/observations/batch\",\n   367→            \"methods\": [\n   368→              \"POST\"\n   369→            ],\n   370→            \"file\": \"src/services/worker/http/routes/DataRoutes.ts\",\n   371→            \"framework\": \"Express\",\n   372→            \"requires_auth\": false\n   373→          },\n   374→          {\n   375→            \"path\": \"/api/session/:id\",\n   376→            \"methods\": [\n   377→              \"GET\"\n   378→            ],\n   379→            \"file\": \"src/services/worker/http/routes/DataRoutes.ts\",\n   380→            \"framework\": \"Express\",\n   381→            \"requires_auth\": false\n   382→          },\n   383→          {\n   384→            \"path\": \"/api/sdk-sessions/batch\",\n   385→            \"methods\": [\n   386→              \"POST\"\n   387→            ],\n   388→            \"file\": \"src/services/worker/http/routes/DataRoutes.ts\",\n   389→            \"framework\": \"Express\",\n   390→            \"requires_auth\": false\n   391→          },\n   392→          {\n   393→            \"path\": \"/api/prompt/:id\",\n   394→            \"methods\": [\n   395→              \"GET\"\n   396→            ],\n   397→            \"file\": \"src/services/worker/http/routes/DataRoutes.ts\",\n   398→            \"framework\": \"Express\",\n   399→            \"requires_auth\": false\n   400→          },\n   401→          {\n   402→            \"path\": \"/api/stats\",\n   403→            \"methods\": [\n   404→              \"GET\"\n   405→            ],\n   406→            \"file\": \"src/services/worker/http/routes/DataRoutes.ts\",\n   407→            \"framework\": \"Express\",\n   408→            \"requires_auth\": false\n   409→          },\n   410→          {\n   411→            \"path\": \"/api/projects\",\n   412→            \"methods\": [\n   413→              \"GET\"\n   414→            ],\n   415→            \"file\": \"src/services/worker/http/routes/DataRoutes.ts\",\n   416→            \"framework\": \"Express\",\n   417→            \"requires_auth\": false\n   418→          },\n   419→          {\n   420→            \"path\": \"/api/processing-status\",\n   421→            \"methods\": [\n   422→              \"GET\"\n   423→            ],\n   424→            \"file\": \"src/services/worker/http/routes/DataRoutes.ts\",\n   425→            \"framework\": \"Express\",\n   426→            \"requires_auth\": false\n   427→          },\n   428→          {\n   429→            \"path\": \"/api/processing\",\n   430→            \"methods\": [\n   431→              \"POST\"\n   432→            ],\n   433→            \"file\": \"src/services/worker/http/routes/DataRoutes.ts\",\n   434→            \"framework\": \"Express\",\n   435→            \"requires_auth\": false\n   436→          },\n   437→          {\n   438→            \"path\": \"/api/import\",\n   439→            \"methods\": [\n   440→              \"POST\"\n   441→            ],\n   442→            \"file\": \"src/services/worker/http/routes/DataRoutes.ts\",\n   443→            \"framework\": \"Express\",\n   444→            \"requires_auth\": false\n   445→          },\n   446→          {\n   447→            \"path\": \"/sessions/:sessionDbId/init\",\n   448→            \"methods\": [\n   449→              \"POST\"\n   450→            ],\n   451→            \"file\": \"src/services/worker/http/routes/SessionRoutes.ts\",\n   452→            \"framework\": \"Express\",\n   453→            \"requires_auth\": false\n   454→          },\n   455→          {\n   456→            \"path\": \"/sessions/:sessionDbId/observations\",\n   457→            \"methods\": [\n   458→              \"POST\"\n   459→            ],\n   460→            \"file\": \"src/services/worker/http/routes/SessionRoutes.ts\",\n   461→            \"framework\": \"Express\",\n   462→            \"requires_auth\": false\n   463→          },\n   464→          {\n   465→            \"path\": \"/sessions/:sessionDbId/summarize\",\n   466→            \"methods\": [\n   467→              \"POST\"\n   468→            ],\n   469→            \"file\": \"src/services/worker/http/routes/SessionRoutes.ts\",\n   470→            \"framework\": \"Express\",\n   471→            \"requires_auth\": false\n   472→          },\n   473→          {\n   474→            \"path\": \"/sessions/:sessionDbId/status\",\n   475→            \"methods\": [\n   476→              \"GET\"\n   477→            ],\n   478→            \"file\": \"src/services/worker/http/routes/SessionRoutes.ts\",\n   479→            \"framework\": \"Express\",\n   480→            \"requires_auth\": false\n   481→          },\n   482→          {\n   483→            \"path\": \"/sessions/:sessionDbId\",\n   484→            \"methods\": [\n   485→              \"DELETE\"\n   486→            ],\n   487→            \"file\": \"src/services/worker/http/routes/SessionRoutes.ts\",\n   488→            \"framework\": \"Express\",\n   489→            \"requires_auth\": false\n   490→          },\n   491→          {\n   492→            \"path\": \"/sessions/:sessionDbId/complete\",\n   493→            \"methods\": [\n   494→              \"POST\"\n   495→            ],\n   496→            \"file\": \"src/services/worker/http/routes/SessionRoutes.ts\",\n   497→            \"framework\": \"Express\",\n   498→            \"requires_auth\": false\n   499→          },\n   500→          {\n   501→            \"path\": \"/api/sessions/init\",\n   502→            \"methods\": [\n   503→              \"POST\"\n   504→            ],\n   505→            \"file\": \"src/services/worker/http/routes/SessionRoutes.ts\",\n   506→            \"framework\": \"Express\",\n   507→            \"requires_auth\": false\n   508→          },\n   509→          {\n   510→            \"path\": \"/api/sessions/observations\",\n   511→            \"methods\": [\n   512→              \"POST\"\n   513→            ],\n   514→            \"file\": \"src/services/worker/http/routes/SessionRoutes.ts\",\n   515→            \"framework\": \"Express\",\n   516→            \"requires_auth\": false\n   517→          },\n   518→          {\n   519→            \"path\": \"/api/sessions/summarize\",\n   520→            \"methods\": [\n   521→              \"POST\"\n   522→            ],\n   523→            \"file\": \"src/services/worker/http/routes/SessionRoutes.ts\",\n   524→            \"framework\": \"Express\",\n   525→            \"requires_auth\": false\n   526→          },\n   527→          {\n   528→            \"path\": \"/api/sessions/complete\",\n   529→            \"methods\": [\n   530→              \"POST\"\n   531→            ],\n   532→            \"file\": \"src/services/worker/http/routes/SessionRoutes.ts\",\n   533→            \"framework\": \"Express\",\n   534→            \"requires_auth\": false\n   535→          },\n   536→          {\n   537→            \"path\": \"/health\",\n   538→            \"methods\": [\n   539→              \"GET\"\n   540→            ],\n   541→            \"file\": \"src/services/worker/http/routes/ViewerRoutes.ts\",\n   542→            \"framework\": \"Express\",\n   543→            \"requires_auth\": false\n   544→          },\n   545→          {\n   546→            \"path\": \"/\",\n   547→            \"methods\": [\n   548→              \"GET\"\n   549→            ],\n   550→            \"file\": \"src/services/worker/http/routes/ViewerRoutes.ts\",\n   551→            \"framework\": \"Express\",\n   552→            \"requires_auth\": false\n   553→          },\n   554→          {\n   555→            \"path\": \"/stream\",\n   556→            \"methods\": [\n   557→              \"GET\"\n   558→            ],\n   559→            \"file\": \"src/services/worker/http/routes/ViewerRoutes.ts\",\n   560→            \"framework\": \"Express\",\n   561→            \"requires_auth\": false\n   562→          }\n   563→        ],\n   564→        \"total_routes\": 57,\n   565→        \"methods\": [\n   566→          \"DELETE\",\n   567→          \"GET\",\n   568→          \"POST\"\n   569→        ],\n   570→        \"protected_routes\": [\n   571→          \"/api/admin/restart\",\n   572→          \"/api/admin/shutdown\"\n   573→        ]\n   574→      },\n   575→      \"monitoring\": {\n   576→        \"health_checks\": [\n   577→          \"/api/health\",\n   578→          \"/health\"\n   579→        ]\n   580→      }\n   581→    },\n   582→    \"mvp-code-ai-ppt-site\": {\n   583→      \"name\": \"mvp-code-ai-ppt-site\",\n   584→      \"path\": \"/Users/ameureka/Desktop/v0-mksaas-analycis-1/mvp-code-ai-ppt-site\",\n   585→      \"language\": \"TypeScript\",\n   586→      \"framework\": \"Next.js\",\n   587→      \"type\": \"frontend\",\n   588→      \"package_manager\": \"pnpm\",\n   589→      \"default_port\": 3005,\n   590→      \"build_tool\": \"Vite\",\n   591→      \"styling\": \"Tailwind CSS\",\n   592→      \"state_management\": \"Zustand\",\n   593→      \"orm\": \"Drizzle\",\n   594→      \"dev_command\": \"npm run dev\",\n   595→      \"key_directories\": {\n   596→        \"src\": {\n   597→          \"path\": \"src\",\n   598→          \"purpose\": \"Source code\"\n   599→        }\n   600→      },\n   601→      \"dependencies\": [\n   602→        \"@ai-sdk/deepseek\",\n   603→        \"@ai-sdk/fal\",\n   604→        \"@ai-sdk/fireworks\",\n   605→        \"@ai-sdk/google\",\n   606→        \"@ai-sdk/openai\",\n   607→        \"@ai-sdk/react\",\n   608→        \"@ai-sdk/replicate\",\n   609→        \"@base-ui-components/react\",\n   610→        \"@better-fetch/fetch\",\n   611→        \"@dnd-kit/core\",\n   612→        \"@dnd-kit/modifiers\",\n   613→        \"@dnd-kit/sortable\",\n   614→        \"@dnd-kit/utilities\",\n   615→        \"@hookform/resolvers\",\n   616→        \"@marsidev/react-turnstile\",\n   617→        \"@mendable/firecrawl-js\",\n   618→        \"@next/env\",\n   619→        \"@next/third-parties\",\n   620→        \"@openpanel/nextjs\",\n   621→        \"@openrouter/ai-sdk-provider\"\n   622→      ],\n   623→      \"dev_dependencies\": [\n   624→        \"@biomejs/biome\",\n   625→        \"@tailwindcss/postcss\",\n   626→        \"@tanstack/eslint-plugin-query\",\n   627→        \"@testing-library/react\",\n   628→        \"@types/mdx\",\n   629→        \"@types/node\",\n   630→        \"@types/pg\",\n   631→        \"@types/react\",\n   632→        \"@types/react-dom\",\n   633→        \"@types/react-syntax-highlighter\"\n   634→      ],\n   635→      \"testing\": \"Vitest\",\n   636→      \"dockerfile\": \"Dockerfile\",\n   637→      \"database\": {\n   638→        \"models\": {\n   639→          \"user\": {\n   640→            \"table\": \"user\",\n   641→            \"fields\": {},\n   642→            \"file\": \"src/db/schema.ts\",\n   643→            \"orm\": \"Drizzle\"\n   644→          },\n   645→          \"session\": {\n   646→            \"table\": \"session\",\n   647→            \"fields\": {},\n   648→            \"file\": \"src/db/schema.ts\",\n   649→            \"orm\": \"Drizzle\"\n   650→          },\n   651→          \"account\": {\n   652→            \"table\": \"account\",\n   653→            \"fields\": {},\n   654→            \"file\": \"src/db/schema.ts\",\n   655→            \"orm\": \"Drizzle\"\n   656→          },\n   657→          \"verification\": {\n   658→            \"table\": \"verification\",\n   659→            \"fields\": {},\n   660→            \"file\": \"src/db/schema.ts\",\n   661→            \"orm\": \"Drizzle\"\n   662→          },\n   663→          \"payment\": {\n   664→            \"table\": \"payment\",\n   665→            \"fields\": {},\n   666→            \"file\": \"src/db/schema.ts\",\n   667→            \"orm\": \"Drizzle\"\n   668→          },\n   669→          \"userCredit\": {\n   670→            \"table\": \"user_credit\",\n   671→            \"fields\": {},\n   672→            \"file\": \"src/db/schema.ts\",\n   673→            \"orm\": \"Drizzle\"\n   674→          },\n   675→          \"creditTransaction\": {\n   676→            \"table\": \"credit_transaction\",\n   677→            \"fields\": {},\n   678→            \"file\": \"src/db/schema.ts\",\n   679→            \"orm\": \"Drizzle\"\n   680→          },\n   681→          \"ppt\": {\n   682→            \"table\": \"ppt\",\n   683→            \"fields\": {},\n   684→            \"file\": \"src/db/schema.ts\",\n   685→            \"orm\": \"Drizzle\"\n   686→          },\n   687→          \"adWatchRecord\": {\n   688→            \"table\": \"ad_watch_record\",\n   689→            \"fields\": {},\n   690→            \"file\": \"src/db/schema.ts\",\n   691→            \"orm\": \"Drizzle\"\n   692→          },\n   693→          \"userDownloadHistory\": {\n   694→            \"table\": \"user_download_history\",\n   695→            \"fields\": {},\n   696→            \"file\": \"src/db/schema.ts\",\n   697→            \"orm\": \"Drizzle\"\n   698→          },\n   699→          \"searchLog\": {\n   700→            \"table\": \"search_log\",\n   701→            \"fields\": {},\n   702→            \"file\": \"src/db/schema.ts\",\n   703→            \"orm\": \"Drizzle\"\n   704→          },\n   705→          \"hotKeywords\": {\n   706→            \"table\": \"hot_keywords\",\n   707→            \"fields\": {},\n   708→            \"file\": \"src/db/schema.ts\",\n   709→            \"orm\": \"Drizzle\"\n   710→          },\n   711→          \"pinnedKeywords\": {\n   712→            \"table\": \"pinned_keywords\",\n   713→            \"fields\": {},\n   714→            \"file\": \"src/db/schema.ts\",\n   715→            \"orm\": \"Drizzle\"\n   716→          }\n   717→        },\n   718→        \"total_models\": 13,\n   719→        \"model_names\": [\n   720→          \"user\",\n   721→          \"session\",\n   722→          \"account\",\n   723→          \"verification\",\n   724→          \"payment\",\n   725→          \"userCredit\",\n   726→          \"creditTransaction\",\n   727→          \"ppt\",\n   728→          \"adWatchRecord\",\n   729→          \"userDownloadHistory\",\n   730→          \"searchLog\",\n   731→          \"hotKeywords\",\n   732→          \"pinnedKeywords\"\n   733→        ]\n   734→      },\n   735→      \"services\": {\n   736→        \"payments\": [\n   737→          {\n   738→            \"provider\": \"stripe\",\n   739→            \"client\": \"stripe\"\n   740→          }\n   741→        ]\n   742→      }\n   743→    },\n   744→    \"pro-Auto-Claude\": {\n   745→      \"name\": \"pro-Auto-Claude\",\n   746→      \"path\": \"/Users/ameureka/Desktop/v0-mksaas-analycis-1/pro-Auto-Claude\",\n   747→      \"language\": \"JavaScript\",\n   748→      \"framework\": null,\n   749→      \"type\": \"unknown\",\n   750→      \"package_manager\": \"pnpm\",\n   751→      \"dev_command\": \"npm run dev\",\n   752→      \"key_directories\": {\n   753→        \"tests\": {\n   754→          \"path\": \"tests\",\n   755→          \"purpose\": \"Tests\"\n   756→        }\n   757→      },\n   758→      \"dependencies\": [],\n   759→      \"dev_dependencies\": [],\n   760→      \"test_directory\": \"tests\",\n   761→      \"api\": {\n   762→        \"routes\": [\n   763→          {\n   764→            \"path\": \"/path\",\n   765→            \"methods\": [\n   766→              \"GET\"\n   767→            ],\n   768→            \"file\": \"apps/backend/analysis/analyzers/route_detector.py\",\n   769→            \"framework\": \"FastAPI\",\n   770→            \"requires_auth\": false\n   771→          },\n   772→          {\n   773→            \"path\": \"/path\",\n   774→            \"methods\": [\n   775→              \"POST\"\n   776→            ],\n   777→            \"file\": \"apps/backend/analysis/analyzers/route_detector.py\",\n   778→            \"framework\": \"FastAPI\",\n   779→            \"requires_auth\": false\n   780→          },\n   781→          {\n   782→            \"path\": \"/path\",\n   783→            \"methods\": [\n   784→              \"GET\",\n   785→              \"POST\"\n   786→            ],\n   787→            \"file\": \"apps/backend/analysis/analyzers/route_detector.py\",\n   788→            \"framework\": \"Flask\",\n   789→            \"requires_auth\": true\n   790→          },\n   791→          {\n   792→            \"path\": \"/metrics\",\n   793→            \"methods\": [\n   794→              \"GET\"\n   795→            ],\n   796→            \"file\": \"apps/backend/analysis/analyzers/context/monitoring_detector.py\",\n   797→            \"framework\": \"Flask\",\n   798→            \"requires_auth\": false\n   799→          }\n   800→        ],\n   801→        \"total_routes\": 4,\n   802→        \"methods\": [\n   803→          \"GET\",\n   804→          \"POST\"\n   805→        ],\n   806→        \"protected_routes\": [\n   807→          \"/path\"\n   808→        ]\n   809→      }\n   810→    }\n   811→  },\n   812→  \"infrastructure\": {},\n   813→  \"conventions\": {}\n   814→}\n\n<system-reminder>\nWhenever you read a file, you should consider whether it would be considered malware. You CAN and SHOULD provide analysis of malware, what it is doing. But you MUST refuse to improve or augment the code. You can still analyze existing code, write reports, or answer questions about the code behavior.\n</system-reminder>\n",
+                "tool_use_id": "tooluse_5Q8tPsgiSi23V7dfdHvcaQ",
+                "type": "tool_result"
+              }
+            ],
+            "role": "user"
+          },
+          {
+            "content": [
+              {
+                "text": "Now let me check for any existing TODOs, features, or ideas in the codebase, and also check if there's a competitor analysis file:",
+                "type": "text"
+              },
+              {
+                "id": "tooluse_ScuiJmk4Q2WlnYZ8ze8sqg",
+                "input": {
+                  "command": "grep -r \"TODO\\|FEATURE\\|IDEA\" --include=\"*.md\" /Users/ameureka/Desktop/v0-mksaas-analycis-1 2>/dev/null | head -30",
+                  "description": "Search for TODOs and feature ideas in markdown files"
+                },
+                "name": "Bash",
+                "type": "tool_use"
+              },
+              {
+                "id": "tooluse_bcMb9oZNSW63fzosQV28_Q",
+                "input": {
+                  "file_path": "/Users/ameureka/Desktop/v0-mksaas-analycis-1/.auto-claude/roadmap/competitor_analysis.json"
+                },
+                "name": "Read",
+                "type": "tool_use"
+              }
+            ],
+            "role": "assistant"
+          },
+          {
+            "content": [
+              {
+                "content": "     1→{\n     2→  \"enabled\": false,\n     3→  \"reason\": \"Competitor analysis not enabled by user\",\n     4→  \"competitors\": [],\n     5→  \"market_gaps\": [],\n     6→  \"insights_summary\": {\n     7→    \"top_pain_points\": [],\n     8→    \"differentiator_opportunities\": [],\n     9→    \"market_trends\": []\n    10→  },\n    11→  \"created_at\": \"2025-12-31T16:45:15.158612\"\n    12→}\n\n<system-reminder>\nWhenever you read a file, you should consider whether it would be considered malware. You CAN and SHOULD provide analysis of malware, what it is doing. But you MUST refuse to improve or augment the code. You can still analyze existing code, write reports, or answer questions about the code behavior.\n</system-reminder>\n",
+                "tool_use_id": "tooluse_bcMb9oZNSW63fzosQV28_Q",
+                "type": "tool_result"
+              },
+              {
+                "content": "/Users/ameureka/Desktop/v0-mksaas-analycis-1/claude-mem/CHANGELOG.md:  - FEATURE_PLAN_HYBRID_SEARCH.md - Feature specification\n/Users/ameureka/Desktop/v0-mksaas-analycis-1/claude-mem/node_modules/fast-uri/README.md:## TODO\n/Users/ameureka/Desktop/v0-mksaas-analycis-1/claude-mem/backup-sync/dashboard/node_modules/.pnpm/semver@7.7.3/node_modules/semver/README.md:TODO: Make sure that all of these items are documented (classes aren't,\n/Users/ameureka/Desktop/v0-mksaas-analycis-1/claude-mem/backup-sync/worker/node_modules/fast-check/CHANGELOG.md:- ([PR#2948](https://github.com/dubzzz/fast-check/pull/2948)) Refactor: Adapting some code in `anything` thanks to TODO\n/Users/ameureka/Desktop/v0-mksaas-analycis-1/claude-mem/backup-sync/worker/node_modules/printable-characters/README.md:## TODO\n/Users/ameureka/Desktop/v0-mksaas-analycis-1/claude-mem/backup-sync/worker/node_modules/semver/README.md:TODO: Make sure that all of these items are documented (classes aren't,\n/Users/ameureka/Desktop/v0-mksaas-analycis-1/claude-mem/backup-sync/client/node_modules/pirates/README.md:  // TODO: Implement your logic here\n/Users/ameureka/Desktop/v0-mksaas-analycis-1/claude-mem/backup-sync/client/node_modules/semver/README.md:TODO: Make sure that all of these items are documented (classes aren't,\n/Users/ameureka/Desktop/v0-mksaas-analycis-1/.claude/skills/knowledge-distiller/operations/knowledge-types.md:- TODO.md → qa_checklist.md (待办清单)\n/Users/ameureka/Desktop/v0-mksaas-analycis-1/.claude/skills/knowledge-distiller/operations/analysis-workflow.md:        '## Completed', '## TODO', '## Next Steps',\n/Users/ameureka/Desktop/v0-mksaas-analycis-1/003-方法论产生过程记录/研究记录过程/001-研究优化skill过程.md:       3 -description: [TODO: Complete and informative explanation of wha\n/Users/ameureka/Desktop/v0-mksaas-analycis-1/003-方法论产生过程记录/研究记录过程/001-研究优化skill过程.md:      10 -[TODO: 1-2 sentences explaining what this skill enables]       \n/Users/ameureka/Desktop/v0-mksaas-analycis-1/003-方法论产生过程记录/研究记录过程/001-研究优化skill过程.md:      14 -[TODO: Choose the structure that best fits this skill's purpose\n/Users/ameureka/Desktop/v0-mksaas-analycis-1/003-方法论产生过程记录/研究记录过程/001-研究优化skill过程.md:      40 -## [TODO: Replace with the first main section based on chosen s\n/Users/ameureka/Desktop/v0-mksaas-analycis-1/003-方法论产生过程记录/研究记录过程/001-研究优化skill过程.md:      42 -[TODO: Add content here. See examples in existing skills:      \n/Users/ameureka/Desktop/v0-mksaas-analycis-1/003-方法论产生过程记录/研究记录过程/021-如何基于系统方法论迁移到auto-claude.md:  ### FEATURE Workflow\n/Users/ameureka/Desktop/v0-mksaas-analycis-1/003-方法论产生过程记录/研究记录过程/015-从文件之中校验知识沉淀及标准化.md:   * TODO-1 Slide 外键:\n/Users/ameureka/Desktop/v0-mksaas-analycis-1/003-方法论产生过程记录/研究记录过程/015-从文件之中校验知识沉淀及标准化.md:       * 代码中根本没有 slide 表。这意味着这个 TODO 要么是基于旧代码的，要么是针对未来计划的。根据之前的分析，Auto-Claude 应该认为 slide 表不存在。因此，这个“高优先级”任务在当前 Context 下是无效的，或者是待创建表的任务。考虑到 schema.ts 没有\n/Users/ameureka/Desktop/v0-mksaas-analycis-1/003-方法论产生过程记录/研究记录过程/015-从文件之中校验知识沉淀及标准化.md:   * TODO-2/3 重复索引:\n/Users/ameureka/Desktop/v0-mksaas-analycis-1/003-方法论产生过程记录/研究记录过程/015-从文件之中校验知识沉淀及标准化.md:       * session_token_idx: schema.ts 中存在 (index(\"session_token_idx\").on(table.token))。且 token 有 unique()。这是一个有效的 TODO（虽然影响不大）。\n/Users/ameureka/Desktop/v0-mksaas-analycis-1/003-方法论产生过程记录/研究记录过程/015-从文件之中校验知识沉淀及标准化.md:   * TODO-4 Category 外键: schema.ts 中没有 category 表。任务无效。\n/Users/ameureka/Desktop/v0-mksaas-analycis-1/003-方法论产生过程记录/研究记录过程/015-从文件之中校验知识沉淀及标准化.md:   * TODO-5 删除测试表: schema.ts 中没有 playing_with_neon。任务已完成（至少在 Schema 定义层面）。\n/Users/ameureka/Desktop/v0-mksaas-analycis-1/003-方法论产生过程记录/研究记录过程/015-从文件之中校验知识沉淀及标准化.md:  更新策略: 更新 待办项目.md，确认已完成的项目，并指出 slide、category 等表目前不在 Schema 中的事实，重新评估剩余 TODO 的有效性。\n/Users/ameureka/Desktop/v0-mksaas-analycis-1/003-方法论产生过程记录/研究记录过程/015-从文件之中校验知识沉淀及标准化.md:       * 将 slide, category, import_batch, playing_with_neon 相关的 TODO 标记为 Invalid / Table Missing。\n/Users/ameureka/Desktop/v0-mksaas-analycis-1/003-方法论产生过程记录/研究记录过程/015-从文件之中校验知识沉淀及标准化.md:       * 确认 session_token_idx 为仅存的有效低优先级 TODO。\n/Users/ameureka/Desktop/v0-mksaas-analycis-1/003-方法论产生过程记录/研究记录过程/015-从文件之中校验知识沉淀及标准化.md:│ 170 - | 1 | TODO-1: slide.ppt_id 外键 | 92 → 96 |                                                                                                                                                                                                │\n/Users/ameureka/Desktop/v0-mksaas-analycis-1/003-方法论产生过程记录/研究记录过程/015-从文件之中校验知识沉淀及标准化.md:│ 171 - | 2 | TODO-3: 清理重复索引 | 96 → 97 |                                                                                                                                                                                                     │\n/Users/ameureka/Desktop/v0-mksaas-analycis-1/003-方法论产生过程记录/研究记录过程/015-从文件之中校验知识沉淀及标准化.md:│ 172 - | 3 | TODO-4: category 外键优化 | 97 → 98 |                                                                                                                                                                                                │\n/Users/ameureka/Desktop/v0-mksaas-analycis-1/003-方法论产生过程记录/研究记录过程/015-从文件之中校验知识沉淀及标准化.md:│ 173 - | 4 | TODO-5: 删除测试表 | 98 → 99 |                                                                                                                                                                                                       │\n/Users/ameureka/Desktop/v0-mksaas-analycis-1/003-方法论产生过程记录/研究记录过程/015-从文件之中校验知识沉淀及标准化.md:│ 174 - | 5 | TODO-2: 评估 session 索引 | 99 → 100 |                                                                                                                                                                                               │",
+                "is_error": false,
+                "tool_use_id": "tooluse_ScuiJmk4Q2WlnYZ8ze8sqg",
+                "type": "tool_result"
+              }
+            ],
+            "role": "user"
+          },
+          {
+            "content": [
+              {
+                "text": "Now I have a comprehensive understanding of the project. Let me also check for any feature plans in the claude-mem directory:",
+                "type": "text"
+              },
+              {
+                "id": "tooluse_6xVZ8UdWR5qDKibEw9xu4Q",
+                "input": {
+                  "path": "/Users/ameureka/Desktop/v0-mksaas-analycis-1",
+                  "pattern": "**/*FEATURE*.md"
+                },
+                "name": "Glob",
+                "type": "tool_use"
+              }
+            ],
+            "role": "assistant"
+          },
+          {
+            "content": [
+              {
+                "content": "No files found\n\n<system-reminder>\nThe TodoWrite tool hasn't been used recently. If you're working on tasks that would benefit from tracking progress, consider using the TodoWrite tool to track progress. Also consider cleaning up the todo list if has become stale and no longer matches what you are working on. Only use it if it's relevant to the current work. This is just a gentle reminder - ignore if not applicable. Make sure that you NEVER mention this reminder to the user\n\n</system-reminder>",
+                "tool_use_id": "tooluse_6xVZ8UdWR5qDKibEw9xu4Q",
+                "type": "tool_result"
+              }
+            ],
+            "role": "user"
+          },
+          {
+            "content": [
+              {
+                "text": "(no content)",
+                "type": "text"
+              },
+              {
+                "cache_control": {
+                  "type": "ephemeral"
+                },
+                "id": "tooluse_K3xSX9HZS8aoPT-Q3z3llw",
+                "input": {
+                  "todos": [
+                    {
+                      "activeForm": "Extracted from roadmap_discovery.json",
+                      "content": "Analyze discovery data and identify user pain points",
+                      "status": "completed"
+                    },
+                    {
+                      "activeForm": "Generating feature list based on discovery",
+                      "content": "Brainstorm features addressing pain points and goals",
+                      "status": "in_progress"
+                    },
+                    {
+                      "activeForm": "Prioritize must/should/could/wont",
+                      "content": "Apply MoSCoW prioritization to features",
+                      "status": "pending"
+                    },
+                    {
+                      "activeForm": "Low/Medium/High assessment",
+                      "content": "Assess complexity and impact for each feature",
+                      "status": "pending"
+                    },
+                    {
+                      "activeForm": "Foundation → Enhancement → Scale → Future",
+                      "content": "Organize features into phases",
+                      "status": "pending"
+                    },
+                    {
+                      "activeForm": "Identify feature dependencies",
+                      "content": "Map dependencies between features",
+                      "status": "pending"
+                    },
+                    {
+                      "activeForm": "Define demonstrable milestones",
+                      "content": "Create milestones within phases",
+                      "status": "pending"
+                    },
+                    {
+                      "activeForm": "Create final output file",
+                      "content": "Generate roadmap.json file",
+                      "status": "pending"
+                    },
+                    {
+                      "activeForm": "Summary and approval request",
+                      "content": "Present roadmap for user review",
+                      "status": "pending"
+                    }
+                  ]
+                },
+                "name": "TodoWrite",
+                "type": "tool_use"
+              }
+            ],
+            "role": "assistant"
+          },
+          {
+            "content": [
+              {
+                "cache_control": {
+                  "type": "ephemeral"
+                },
+                "content": "Todos have been modified successfully. Ensure that you continue to use the todo list to track your progress. Please proceed with the current tasks if applicable",
+                "tool_use_id": "tooluse_K3xSX9HZS8aoPT-Q3z3llw",
+                "type": "tool_result"
+              }
+            ],
+            "role": "user"
+          }
+        ],
+        "model": "claude-opus-4-5-20251101",
+        "stream": false,
+        "system": [
+          {
+            "cache_control": {
+              "type": "ephemeral"
+            },
+            "text": "You are a Claude agent, built on Anthropic's Claude Agent SDK.",
+            "type": "text"
+          },
+          {
+            "cache_control": {
+              "type": "ephemeral"
+            },
+            "text": "You are an expert full-stack developer building production-quality software. Your working directory is: /Users/ameureka/Desktop/v0-mksaas-analycis-1\nYour filesystem access is RESTRICTED to this directory only. Use relative paths (starting with ./) for all file operations. Never use absolute paths or try to access files outside your working directory.\n\nYou follow existing code patterns, write clean maintainable code, and verify your work through thorough testing. You communicate progress through Git commits and build-progress.txt updates.\n\n# Project Instructions (from CLAUDE.md)\n\n# Ameureka V0: Vibe Coding Engineering Lab\n\n> **The Project Context Entry Point**\n>\n> 这是一个高度集成的**综合性工程实验室 (Monorepo Workspace)**，旨在实践和进化 \"Vibe Coding\" 方法论。这里不仅生产代码，更生产“编写软件的软件”以及配套的理论体系。\n\n## 1. 核心哲学 (Core Philosophy)\n*   **Vibe Coding**: 开发者从 \"Coder\" 进化为 \"Foreman\" (包工头/导演)。重心从 `How` (实现细节) 转移至 `What` (Specs/PRD) 和 `Why` (架构决策)。\n*   **Pipeline Driven**: 拒绝黑盒生成，坚持 **Conductor 模式** (Specs -> Plan -> Implement -> Verify)。\n*   **Dual AI Calibration**: 引入红蓝对抗思想。Builder (Auto-Claude) 构建功能，Breaker (Shannon) 进行攻击测试。\n\n## 2. 体系结构 (Ecosystem Structure)\n\n此工作区分为三个核心板块：\n\n### 🏛️ 实战演练场 (The Battlefield)\n*   **路径**: `mvp-code-ai-ppt-site/`\n*   **定位**: 验证方法论的旗舰 SaaS 产品 (PPTHub)。\n*   **技术栈**: Next.js 15, React 19, TypeScript, Drizzle ORM, TailwindCSS, Stripe, AI SDK.\n*   **关键动作**: 在此目录执行具体的功能开发，验证 `Auto-Claude` 的能力。\n\n### 🛠️ 基础设施 (The Infrastructure)\n*   **`claude-mem/`**: **记忆系统**。解决 LLM 上下文丢失问题，支持跨 Session 的知识检索。\n*   **`pro-Auto-Claude/`**: **下一代工具**。基于 Google Gemini CLI 架构分析，重构现有的自动化脚本，打造企业级 CLI 平台。\n*   **`000-vibecoding 基础设施/`**: 包含 `agent-foreman`, `skill-agent` 等原型工具。\n\n### 🧠 知识大脑 (The Brain)\n*   **`000-知识体系化方法论/`**: AI Hacker Agent, Prompt Engineering 理论。\n*   **`004-ebook 图书编写/`**: 记录从零构建此体系的过程（《如何实现长时间 2 小时运行》、《构建流水线 Pipeline》）。\n*   **`003-方法论产生过程记录/`**: 混沌到有序的思考快照。\n\n## 3. 常用命令 (Cheat Sheet)\n\n### Global\n*   **Environment**: 确保 `.env.local` 配置正确（参考各个子目录的 `.env.example`）。\n\n### SaaS MVP (`cd mvp-code-ai-ppt-site`)\n*   `pnpm dev`: 启动开发服务器 (Port 3005)。\n*   `pnpm db:push` / `pnpm db:studio`: 数据库迁移与管理。\n*   `pnpm email`: 预览邮件模板。\n*   `pnpm test:e2e`: 运行 Playwright 测试。\n\n### Claude Mem (`cd claude-mem`)\n*   `npm run build`: 构建项目。\n*   `npm run worker:start`: 启动记忆服务 (Port 37777)。\n\n### Auto-Claude Analysis (`cd pro-Auto-Claude`)\n*   查看 `analysis-summary.md` 获取架构重构指南。\n\n## 4. 开发协议 (Development Protocols)\n\n1.  **Conductor Mode**: 在接到复杂任务时，必须先制定 Plan，并按步骤执行。\n2.  **Spec-First**: 修改代码前，先确认 `docs/` 或 `specs/` 中的需求文档。\n3.  **Memory Aware**: 利用 `claude-mem` 检索历史上下文，避免重复提问。\n4.  **Language**:\n    *   **Thinking/Docs**: 中文 (Chinese) - 保持思维流畅。\n    *   **Code/Comments**: 英文 (English) - 保持国际化标准。\n\n## 5. 当前重点 (Current Focus)\n*   **Refactoring**: 将散乱的脚本整合进 `pro-Auto-Claude`，构建统一的 CLI。\n*   **Documentation**: 继续完善 `004-ebook`，沉淀 Vibe Coding 方法论。\n*   **Product Evolution**: 迭代 `mvp-code-ai-ppt-site`，引入更多 AI Agent 能力。\n",
+            "type": "text"
+          }
+        ],
+        "temperature": 1.0,
+        "tools": [
+          {
+            "description": "Launch a new agent to handle complex, multi-step tasks autonomously. \n\nThe Task tool launches specialized agents (subprocesses) that autonomously handle complex tasks. Each agent type has specific capabilities and tools available to it.\n\nAvailable agent types and the tools they have access to:\n- general-purpose: General-purpose agent for researching complex questions, searching for code, and executing multi-step tasks. When you are searching for a keyword or file and are not confident that you will find the right match in the first few tries use this agent to perform the search for you. (Tools: *)\n- statusline-setup: Use this agent to configure the user's Claude Code status line setting. (Tools: Read, Edit)\n- Explore: Fast agent specialized for exploring codebases. Use this when you need to quickly find files by patterns (eg. \"src/components/**/*.tsx\"), search code for keywords (eg. \"API endpoints\"), or answer questions about the codebase (eg. \"how do API endpoints work?\"). When calling this agent, specify the desired thoroughness level: \"quick\" for basic searches, \"medium\" for moderate exploration, or \"very thorough\" for comprehensive analysis across multiple locations and naming conventions. (Tools: All tools)\n- Plan: Software architect agent for designing implementation plans. Use this when you need to plan the implementation strategy for a task. Returns step-by-step plans, identifies critical files, and considers architectural trade-offs. (Tools: All tools)\n\nWhen using the Task tool, you must specify a subagent_type parameter to select which agent type to use.\n\nWhen NOT to use the Task tool:\n- If you want to read a specific file path, use the Read or Glob tool instead of the Task tool, to find the match more quickly\n- If you are searching for a specific class definition like \"class Foo\", use the Glob tool instead, to find the match more quickly\n- If you are searching for code within a specific file or set of 2-3 files, use the Read tool instead of the Task tool, to find the match more quickly\n- Other tasks that are not related to the agent descriptions above\n\n\nUsage notes:\n- Always include a short description (3-5 words) summarizing what the agent will do\n- Launch multiple agents concurrently whenever possible, to maximize performance; to do that, use a single message with multiple tool uses\n- When the agent is done, it will return a single message back to you. The result returned by the agent is not visible to the user. To show the user the result, you should send a text message back to the user with a concise summary of the result.\n- You can optionally run agents in the background using the run_in_background parameter. When an agent runs in the background, you will need to use TaskOutput to retrieve its results once it's done. You can continue to work while background agents run - When you need their results to continue you can use TaskOutput in blocking mode to pause and wait for their results.\n- Agents can be resumed using the `resume` parameter by passing the agent ID from a previous invocation. When resumed, the agent continues with its full previous context preserved. When NOT resuming, each invocation starts fresh and you should provide a detailed task description with all necessary context.\n- When the agent is done, it will return a single message back to you along with its agent ID. You can use this ID to resume the agent later if needed for follow-up work.\n- Provide clear, detailed prompts so the agent can work autonomously and return exactly the information you need.\n- Agents with \"access to current context\" can see the full conversation history before the tool call. When using these agents, you can write concise prompts that reference earlier context (e.g., \"investigate the error discussed above\") instead of repeating information. The agent will receive all prior messages and understand the context.\n- The agent's outputs should generally be trusted\n- Clearly tell the agent whether you expect it to write code or just to do research (search, file reads, web fetches, etc.), since it is not aware of the user's intent\n- If the agent description mentions that it should be used proactively, then you should try your best to use it without the user having to ask for it first. Use your judgement.\n- If the user specifies that they want you to run agents \"in parallel\", you MUST send a single message with multiple Task tool use content blocks. For example, if you need to launch both a code-reviewer agent and a test-runner agent in parallel, send a single message with both tool calls.\n\nExample usage:\n\n<example_agent_descriptions>\n\"code-reviewer\": use this agent after you are done writing a signficant piece of code\n\"greeting-responder\": use this agent when to respond to user greetings with a friendly joke\n</example_agent_description>\n\n<example>\nuser: \"Please write a function that checks if a number is prime\"\nassistant: Sure let me write a function that checks if a number is prime\nassistant: First let me use the Write tool to write a function that checks if a number is prime\nassistant: I'm going to use the Write tool to write the following code:\n<code>\nfunction isPrime(n) {\n  if (n <= 1) return false\n  for (let i = 2; i * i <= n; i++) {\n    if (n % i === 0) return false\n  }\n  return true\n}\n</code>\n<commentary>\nSince a signficant piece of code was written and the task was completed, now use the code-reviewer agent to review the code\n</commentary>\nassistant: Now let me use the code-reviewer agent to review the code\nassistant: Uses the Task tool to launch the code-reviewer agent \n</example>\n\n<example>\nuser: \"Hello\"\n<commentary>\nSince the user is greeting, use the greeting-responder agent to respond with a friendly joke\n</commentary>\nassistant: \"I'm going to use the Task tool to launch the greeting-responder agent\"\n</example>\n",
+            "input_schema": {
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "additionalProperties": false,
+              "properties": {
+                "description": {
+                  "description": "A short (3-5 word) description of the task",
+                  "type": "string"
+                },
+                "model": {
+                  "description": "Optional model to use for this agent. If not specified, inherits from parent. Prefer haiku for quick, straightforward tasks to minimize cost and latency.",
+                  "enum": [
+                    "sonnet",
+                    "opus",
+                    "haiku"
+                  ],
+                  "type": "string"
+                },
+                "prompt": {
+                  "description": "The task for the agent to perform",
+                  "type": "string"
+                },
+                "resume": {
+                  "description": "Optional agent ID to resume from. If provided, the agent will continue from the previous execution transcript.",
+                  "type": "string"
+                },
+                "run_in_background": {
+                  "description": "Set to true to run this agent in the background. Use TaskOutput to read the output later.",
+                  "type": "boolean"
+                },
+                "subagent_type": {
+                  "description": "The type of specialized agent to use for this task",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "description",
+                "prompt",
+                "subagent_type"
+              ],
+              "type": "object"
+            },
+            "name": "Task"
+          },
+          {
+            "description": "- Retrieves output from a running or completed task (background shell, agent, or remote session)\n- Takes a task_id parameter identifying the task\n- Returns the task output along with status information\n- Use block=true (default) to wait for task completion\n- Use block=false for non-blocking check of current status\n- Task IDs can be found using the /tasks command\n- Works with all task types: background shells, async agents, and remote sessions",
+            "input_schema": {
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "additionalProperties": false,
+              "properties": {
+                "block": {
+                  "default": true,
+                  "description": "Whether to wait for completion",
+                  "type": "boolean"
+                },
+                "task_id": {
+                  "description": "The task ID to get output from",
+                  "type": "string"
+                },
+                "timeout": {
+                  "default": 30000,
+                  "description": "Max wait time in ms",
+                  "maximum": 600000,
+                  "minimum": 0,
+                  "type": "number"
+                }
+              },
+              "required": [
+                "task_id"
+              ],
+              "type": "object"
+            },
+            "name": "TaskOutput"
+          },
+          {
+            "description": "Executes a given bash command in a persistent shell session with optional timeout, ensuring proper handling and security measures.\n\nIMPORTANT: This tool is for terminal operations like git, npm, docker, etc. DO NOT use it for file operations (reading, writing, editing, searching, finding files) - use the specialized tools for this instead.\n\nBefore executing the command, please follow these steps:\n\n1. Directory Verification:\n   - If the command will create new directories or files, first use `ls` to verify the parent directory exists and is the correct location\n   - For example, before running \"mkdir foo/bar\", first use `ls foo` to check that \"foo\" exists and is the intended parent directory\n\n2. Command Execution:\n   - Always quote file paths that contain spaces with double quotes (e.g., cd \"path with spaces/file.txt\")\n   - Examples of proper quoting:\n     - cd \"/Users/name/My Documents\" (correct)\n     - cd /Users/name/My Documents (incorrect - will fail)\n     - python \"/path/with spaces/script.py\" (correct)\n     - python /path/with spaces/script.py (incorrect - will fail)\n   - After ensuring proper quoting, execute the command.\n   - Capture the output of the command.\n\nUsage notes:\n  - The command argument is required.\n  - You can specify an optional timeout in milliseconds (up to 600000ms / 10 minutes). If not specified, commands will timeout after 120000ms (2 minutes).\n  - It is very helpful if you write a clear, concise description of what this command does in 5-10 words.\n  - If the output exceeds 30000 characters, output will be truncated before being returned to you.\n  - You can use the `run_in_background` parameter to run the command in the background, which allows you to continue working while the command runs. You can monitor the output using the Bash tool as it becomes available. You do not need to use '&' at the end of the command when using this parameter.\n  \n  - Avoid using Bash with the `find`, `grep`, `cat`, `head`, `tail`, `sed`, `awk`, or `echo` commands, unless explicitly instructed or when these commands are truly necessary for the task. Instead, always prefer using the dedicated tools for these commands:\n    - File search: Use Glob (NOT find or ls)\n    - Content search: Use Grep (NOT grep or rg)\n    - Read files: Use Read (NOT cat/head/tail)\n    - Edit files: Use Edit (NOT sed/awk)\n    - Write files: Use Write (NOT echo >/cat <<EOF)\n    - Communication: Output text directly (NOT echo/printf)\n  - When issuing multiple commands:\n    - If the commands are independent and can run in parallel, make multiple Bash tool calls in a single message. For example, if you need to run \"git status\" and \"git diff\", send a single message with two Bash tool calls in parallel.\n    - If the commands depend on each other and must run sequentially, use a single Bash call with '&&' to chain them together (e.g., `git add . && git commit -m \"message\" && git push`). For instance, if one operation must complete before another starts (like mkdir before cp, Write before Bash for git operations, or git add before git commit), run these operations sequentially instead.\n    - Use ';' only when you need to run commands sequentially but don't care if earlier commands fail\n    - DO NOT use newlines to separate commands (newlines are ok in quoted strings)\n  - Try to maintain your current working directory throughout the session by using absolute paths and avoiding usage of `cd`. You may use `cd` if the User explicitly requests it.\n    <good-example>\n    pytest /foo/bar/tests\n    </good-example>\n    <bad-example>\n    cd /foo/bar && pytest tests\n    </bad-example>\n\n# Committing changes with git\n\nOnly create commits when requested by the user. If unclear, ask first. When the user asks you to create a new git commit, follow these steps carefully:\n\nGit Safety Protocol:\n- NEVER update the git config\n- NEVER run destructive/irreversible git commands (like push --force, hard reset, etc) unless the user explicitly requests them \n- NEVER skip hooks (--no-verify, --no-gpg-sign, etc) unless the user explicitly requests it\n- NEVER run force push to main/master, warn the user if they request it\n- Avoid git commit --amend. ONLY use --amend when ALL conditions are met:\n  (1) User explicitly requested amend, OR commit SUCCEEDED but pre-commit hook auto-modified files that need including\n  (2) HEAD commit was created by you in this conversation (verify: git log -1 --format='%an %ae')\n  (3) Commit has NOT been pushed to remote (verify: git status shows \"Your branch is ahead\")\n- CRITICAL: If commit FAILED or was REJECTED by hook, NEVER amend - fix the issue and create a NEW commit\n- CRITICAL: If you already pushed to remote, NEVER amend unless user explicitly requests it (requires force push)\n- NEVER commit changes unless the user explicitly asks you to. It is VERY IMPORTANT to only commit when explicitly asked, otherwise the user will feel that you are being too proactive.\n\n1. You can call multiple tools in a single response. When multiple independent pieces of information are requested and all commands are likely to succeed, run multiple tool calls in parallel for optimal performance. run the following bash commands in parallel, each using the Bash tool:\n  - Run a git status command to see all untracked files.\n  - Run a git diff command to see both staged and unstaged changes that will be committed.\n  - Run a git log command to see recent commit messages, so that you can follow this repository's commit message style.\n2. Analyze all staged changes (both previously staged and newly added) and draft a commit message:\n  - Summarize the nature of the changes (eg. new feature, enhancement to an existing feature, bug fix, refactoring, test, docs, etc.). Ensure the message accurately reflects the changes and their purpose (i.e. \"add\" means a wholly new feature, \"update\" means an enhancement to an existing feature, \"fix\" means a bug fix, etc.).\n  - Do not commit files that likely contain secrets (.env, credentials.json, etc). Warn the user if they specifically request to commit those files\n  - Draft a concise (1-2 sentences) commit message that focuses on the \"why\" rather than the \"what\"\n  - Ensure it accurately reflects the changes and their purpose\n3. You can call multiple tools in a single response. When multiple independent pieces of information are requested and all commands are likely to succeed, run multiple tool calls in parallel for optimal performance. run the following commands:\n   - Add relevant untracked files to the staging area.\n   - Create the commit with a message ending with:\n   🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\n   Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\n   - Run git status after the commit completes to verify success.\n   Note: git status depends on the commit completing, so run it sequentially after the commit.\n4. If the commit fails due to pre-commit hook:\n   - If hook REJECTED the commit (non-zero exit): Fix the issue, then create a NEW commit (NEVER amend)\n   - If commit SUCCEEDED but hook auto-modified files (e.g., formatting): You MAY amend to include them, but ONLY if:\n     * HEAD was created by you (verify: git log -1 --format='%an %ae')\n     * Commit is not pushed (verify: git status shows \"Your branch is ahead\")\n   - When in doubt, create a NEW commit instead of amending\n\nImportant notes:\n- NEVER run additional commands to read or explore code, besides git bash commands\n- NEVER use the TodoWrite or Task tools\n- DO NOT push to the remote repository unless the user explicitly asks you to do so\n- IMPORTANT: Never use git commands with the -i flag (like git rebase -i or git add -i) since they require interactive input which is not supported.\n- If there are no changes to commit (i.e., no untracked files and no modifications), do not create an empty commit\n- In order to ensure good formatting, ALWAYS pass the commit message via a HEREDOC, a la this example:\n<example>\ngit commit -m \"$(cat <<'EOF'\n   Commit message here.\n\n   🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\n   Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\n   EOF\n   )\"\n</example>\n\n# Creating pull requests\nUse the gh command via the Bash tool for ALL GitHub-related tasks including working with issues, pull requests, checks, and releases. If given a Github URL use the gh command to get the information needed.\n\nIMPORTANT: When the user asks you to create a pull request, follow these steps carefully:\n\n1. You can call multiple tools in a single response. When multiple independent pieces of information are requested and all commands are likely to succeed, run multiple tool calls in parallel for optimal performance. run the following bash commands in parallel using the Bash tool, in order to understand the current state of the branch since it diverged from the main branch:\n   - Run a git status command to see all untracked files\n   - Run a git diff command to see both staged and unstaged changes that will be committed\n   - Check if the current branch tracks a remote branch and is up to date with the remote, so you know if you need to push to the remote\n   - Run a git log command and `git diff [base-branch]...HEAD` to understand the full commit history for the current branch (from the time it diverged from the base branch)\n2. Analyze all changes that will be included in the pull request, making sure to look at all relevant commits (NOT just the latest commit, but ALL commits that will be included in the pull request!!!), and draft a pull request summary\n3. You can call multiple tools in a single response. When multiple independent pieces of information are requested and all commands are likely to succeed, run multiple tool calls in parallel for optimal performance. run the following commands in parallel:\n   - Create new branch if needed\n   - Push to remote with -u flag if needed\n   - Create PR using gh pr create with the format below. Use a HEREDOC to pass the body to ensure correct formatting.\n<example>\ngh pr create --title \"the pr title\" --body \"$(cat <<'EOF'\n## Summary\n<1-3 bullet points>\n\n## Test plan\n[Bulleted markdown checklist of TODOs for testing the pull request...]\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\nEOF\n)\"\n</example>\n\nImportant:\n- DO NOT use the TodoWrite or Task tools\n- Return the PR URL when you're done, so the user can see it\n\n# Other common operations\n- View comments on a Github PR: gh api repos/foo/bar/pulls/123/comments",
+            "input_schema": {
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "additionalProperties": false,
+              "properties": {
+                "command": {
+                  "description": "The command to execute",
+                  "type": "string"
+                },
+                "dangerouslyDisableSandbox": {
+                  "description": "Set this to true to dangerously override sandbox mode and run commands without sandboxing.",
+                  "type": "boolean"
+                },
+                "description": {
+                  "description": "Clear, concise description of what this command does in 5-10 words, in active voice. Examples:\nInput: ls\nOutput: List files in current directory\n\nInput: git status\nOutput: Show working tree status\n\nInput: npm install\nOutput: Install package dependencies\n\nInput: mkdir foo\nOutput: Create directory 'foo'",
+                  "type": "string"
+                },
+                "run_in_background": {
+                  "description": "Set to true to run this command in the background. Use TaskOutput to read the output later.",
+                  "type": "boolean"
+                },
+                "timeout": {
+                  "description": "Optional timeout in milliseconds (max 600000)",
+                  "type": "number"
+                }
+              },
+              "required": [
+                "command"
+              ],
+              "type": "object"
+            },
+            "name": "Bash"
+          },
+          {
+            "description": "- Fast file pattern matching tool that works with any codebase size\n- Supports glob patterns like \"**/*.js\" or \"src/**/*.ts\"\n- Returns matching file paths sorted by modification time\n- Use this tool when you need to find files by name patterns\n- When you are doing an open ended search that may require multiple rounds of globbing and grepping, use the Agent tool instead\n- You can call multiple tools in a single response. It is always better to speculatively perform multiple searches in parallel if they are potentially useful.",
+            "input_schema": {
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "additionalProperties": false,
+              "properties": {
+                "path": {
+                  "description": "The directory to search in. If not specified, the current working directory will be used. IMPORTANT: Omit this field to use the default directory. DO NOT enter \"undefined\" or \"null\" - simply omit it for the default behavior. Must be a valid directory path if provided.",
+                  "type": "string"
+                },
+                "pattern": {
+                  "description": "The glob pattern to match files against",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "pattern"
+              ],
+              "type": "object"
+            },
+            "name": "Glob"
+          },
+          {
+            "description": "A powerful search tool built on ripgrep\n\n  Usage:\n  - ALWAYS use Grep for search tasks. NEVER invoke `grep` or `rg` as a Bash command. The Grep tool has been optimized for correct permissions and access.\n  - Supports full regex syntax (e.g., \"log.*Error\", \"function\\s+\\w+\")\n  - Filter files with glob parameter (e.g., \"*.js\", \"**/*.tsx\") or type parameter (e.g., \"js\", \"py\", \"rust\")\n  - Output modes: \"content\" shows matching lines, \"files_with_matches\" shows only file paths (default), \"count\" shows match counts\n  - Use Task tool for open-ended searches requiring multiple rounds\n  - Pattern syntax: Uses ripgrep (not grep) - literal braces need escaping (use `interface\\{\\}` to find `interface{}` in Go code)\n  - Multiline matching: By default patterns match within single lines only. For cross-line patterns like `struct \\{[\\s\\S]*?field`, use `multiline: true`\n",
+            "input_schema": {
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "additionalProperties": false,
+              "properties": {
+                "-A": {
+                  "description": "Number of lines to show after each match (rg -A). Requires output_mode: \"content\", ignored otherwise.",
+                  "type": "number"
+                },
+                "-B": {
+                  "description": "Number of lines to show before each match (rg -B). Requires output_mode: \"content\", ignored otherwise.",
+                  "type": "number"
+                },
+                "-C": {
+                  "description": "Number of lines to show before and after each match (rg -C). Requires output_mode: \"content\", ignored otherwise.",
+                  "type": "number"
+                },
+                "-i": {
+                  "description": "Case insensitive search (rg -i)",
+                  "type": "boolean"
+                },
+                "-n": {
+                  "description": "Show line numbers in output (rg -n). Requires output_mode: \"content\", ignored otherwise. Defaults to true.",
+                  "type": "boolean"
+                },
+                "glob": {
+                  "description": "Glob pattern to filter files (e.g. \"*.js\", \"*.{ts,tsx}\") - maps to rg --glob",
+                  "type": "string"
+                },
+                "head_limit": {
+                  "description": "Limit output to first N lines/entries, equivalent to \"| head -N\". Works across all output modes: content (limits output lines), files_with_matches (limits file paths), count (limits count entries). Defaults to 0 (unlimited).",
+                  "type": "number"
+                },
+                "multiline": {
+                  "description": "Enable multiline mode where . matches newlines and patterns can span lines (rg -U --multiline-dotall). Default: false.",
+                  "type": "boolean"
+                },
+                "offset": {
+                  "description": "Skip first N lines/entries before applying head_limit, equivalent to \"| tail -n +N | head -N\". Works across all output modes. Defaults to 0.",
+                  "type": "number"
+                },
+                "output_mode": {
+                  "description": "Output mode: \"content\" shows matching lines (supports -A/-B/-C context, -n line numbers, head_limit), \"files_with_matches\" shows file paths (supports head_limit), \"count\" shows match counts (supports head_limit). Defaults to \"files_with_matches\".",
+                  "enum": [
+                    "content",
+                    "files_with_matches",
+                    "count"
+                  ],
+                  "type": "string"
+                },
+                "path": {
+                  "description": "File or directory to search in (rg PATH). Defaults to current working directory.",
+                  "type": "string"
+                },
+                "pattern": {
+                  "description": "The regular expression pattern to search for in file contents",
+                  "type": "string"
+                },
+                "type": {
+                  "description": "File type to search (rg --type). Common types: js, py, rust, go, java, etc. More efficient than include for standard file types.",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "pattern"
+              ],
+              "type": "object"
+            },
+            "name": "Grep"
+          },
+          {
+            "description": "Use this tool when you are in plan mode and have finished writing your plan to the plan file and are ready for user approval.\n\n## How This Tool Works\n- You should have already written your plan to the plan file specified in the plan mode system message\n- This tool does NOT take the plan content as a parameter - it will read the plan from the file you wrote\n- This tool simply signals that you're done planning and ready for the user to review and approve\n- The user will see the contents of your plan file when they review it\n\n## When to Use This Tool\nIMPORTANT: Only use this tool when the task requires planning the implementation steps of a task that requires writing code. For research tasks where you're gathering information, searching files, reading files or in general trying to understand the codebase - do NOT use this tool.\n\n## Handling Ambiguity in Plans\nBefore using this tool, ensure your plan is clear and unambiguous. If there are multiple valid approaches or unclear requirements:\n1. Use the AskUserQuestion tool to clarify with the user\n2. Ask about specific implementation choices (e.g., architectural patterns, which library to use)\n3. Clarify any assumptions that could affect the implementation\n4. Edit your plan file to incorporate user feedback\n5. Only proceed with ExitPlanMode after resolving ambiguities and updating the plan file\n\n## Examples\n\n1. Initial task: \"Search for and understand the implementation of vim mode in the codebase\" - Do not use the exit plan mode tool because you are not planning the implementation steps of a task.\n2. Initial task: \"Help me implement yank mode for vim\" - Use the exit plan mode tool after you have finished planning the implementation steps of the task.\n3. Initial task: \"Add a new feature to handle user authentication\" - If unsure about auth method (OAuth, JWT, etc.), use AskUserQuestion first, then use exit plan mode tool after clarifying the approach.\n",
+            "input_schema": {
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "additionalProperties": true,
+              "properties": {
+                "launchSwarm": {
+                  "description": "Whether to launch a swarm to implement the plan",
+                  "type": "boolean"
+                },
+                "teammateCount": {
+                  "description": "Number of teammates to spawn in the swarm",
+                  "type": "number"
+                }
+              },
+              "type": "object"
+            },
+            "name": "ExitPlanMode"
+          },
+          {
+            "description": "Reads a file from the local filesystem. You can access any file directly by using this tool.\nAssume this tool is able to read all files on the machine. If the User provides a path to a file assume that path is valid. It is okay to read a file that does not exist; an error will be returned.\n\nUsage:\n- The file_path parameter must be an absolute path, not a relative path\n- By default, it reads up to 2000 lines starting from the beginning of the file\n- You can optionally specify a line offset and limit (especially handy for long files), but it's recommended to read the whole file by not providing these parameters\n- Any lines longer than 2000 characters will be truncated\n- Results are returned using cat -n format, with line numbers starting at 1\n- This tool allows Claude Code to read images (eg PNG, JPG, etc). When reading an image file the contents are presented visually as Claude Code is a multimodal LLM.\n- This tool can read PDF files (.pdf). PDFs are processed page by page, extracting both text and visual content for analysis.\n- This tool can read Jupyter notebooks (.ipynb files) and returns all cells with their outputs, combining code, text, and visualizations.\n- This tool can only read files, not directories. To read a directory, use an ls command via the Bash tool.\n- You can call multiple tools in a single response. It is always better to speculatively read multiple potentially useful files in parallel.\n- You will regularly be asked to read screenshots. If the user provides a path to a screenshot, ALWAYS use this tool to view the file at the path. This tool will work with all temporary file paths.\n- If you read a file that exists but has empty contents you will receive a system reminder warning in place of file contents.",
+            "input_schema": {
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "additionalProperties": false,
+              "properties": {
+                "file_path": {
+                  "description": "The absolute path to the file to read",
+                  "type": "string"
+                },
+                "limit": {
+                  "description": "The number of lines to read. Only provide if the file is too large to read at once.",
+                  "type": "number"
+                },
+                "offset": {
+                  "description": "The line number to start reading from. Only provide if the file is too large to read at once",
+                  "type": "number"
+                }
+              },
+              "required": [
+                "file_path"
+              ],
+              "type": "object"
+            },
+            "name": "Read"
+          },
+          {
+            "description": "Performs exact string replacements in files. \n\nUsage:\n- You must use your `Read` tool at least once in the conversation before editing. This tool will error if you attempt an edit without reading the file. \n- When editing text from Read tool output, ensure you preserve the exact indentation (tabs/spaces) as it appears AFTER the line number prefix. The line number prefix format is: spaces + line number + tab. Everything after that tab is the actual file content to match. Never include any part of the line number prefix in the old_string or new_string.\n- ALWAYS prefer editing existing files in the codebase. NEVER write new files unless explicitly required.\n- Only use emojis if the user explicitly requests it. Avoid adding emojis to files unless asked.\n- The edit will FAIL if `old_string` is not unique in the file. Either provide a larger string with more surrounding context to make it unique or use `replace_all` to change every instance of `old_string`. \n- Use `replace_all` for replacing and renaming strings across the file. This parameter is useful if you want to rename a variable for instance.",
+            "input_schema": {
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "additionalProperties": false,
+              "properties": {
+                "file_path": {
+                  "description": "The absolute path to the file to modify",
+                  "type": "string"
+                },
+                "new_string": {
+                  "description": "The text to replace it with (must be different from old_string)",
+                  "type": "string"
+                },
+                "old_string": {
+                  "description": "The text to replace",
+                  "type": "string"
+                },
+                "replace_all": {
+                  "default": false,
+                  "description": "Replace all occurences of old_string (default false)",
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "file_path",
+                "old_string",
+                "new_string"
+              ],
+              "type": "object"
+            },
+            "name": "Edit"
+          },
+          {
+            "description": "Writes a file to the local filesystem.\n\nUsage:\n- This tool will overwrite the existing file if there is one at the provided path.\n- If this is an existing file, you MUST use the Read tool first to read the file's contents. This tool will fail if you did not read the file first.\n- ALWAYS prefer editing existing files in the codebase. NEVER write new files unless explicitly required.\n- NEVER proactively create documentation files (*.md) or README files. Only create documentation files if explicitly requested by the User.\n- Only use emojis if the user explicitly requests it. Avoid writing emojis to files unless asked.",
+            "input_schema": {
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "additionalProperties": false,
+              "properties": {
+                "content": {
+                  "description": "The content to write to the file",
+                  "type": "string"
+                },
+                "file_path": {
+                  "description": "The absolute path to the file to write (must be absolute, not relative)",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "file_path",
+                "content"
+              ],
+              "type": "object"
+            },
+            "name": "Write"
+          },
+          {
+            "description": "Completely replaces the contents of a specific cell in a Jupyter notebook (.ipynb file) with new source. Jupyter notebooks are interactive documents that combine code, text, and visualizations, commonly used for data analysis and scientific computing. The notebook_path parameter must be an absolute path, not a relative path. The cell_number is 0-indexed. Use edit_mode=insert to add a new cell at the index specified by cell_number. Use edit_mode=delete to delete the cell at the index specified by cell_number.",
+            "input_schema": {
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "additionalProperties": false,
+              "properties": {
+                "cell_id": {
+                  "description": "The ID of the cell to edit. When inserting a new cell, the new cell will be inserted after the cell with this ID, or at the beginning if not specified.",
+                  "type": "string"
+                },
+                "cell_type": {
+                  "description": "The type of the cell (code or markdown). If not specified, it defaults to the current cell type. If using edit_mode=insert, this is required.",
+                  "enum": [
+                    "code",
+                    "markdown"
+                  ],
+                  "type": "string"
+                },
+                "edit_mode": {
+                  "description": "The type of edit to make (replace, insert, delete). Defaults to replace.",
+                  "enum": [
+                    "replace",
+                    "insert",
+                    "delete"
+                  ],
+                  "type": "string"
+                },
+                "new_source": {
+                  "description": "The new source for the cell",
+                  "type": "string"
+                },
+                "notebook_path": {
+                  "description": "The absolute path to the Jupyter notebook file to edit (must be absolute, not relative)",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "notebook_path",
+                "new_source"
+              ],
+              "type": "object"
+            },
+            "name": "NotebookEdit"
+          },
+          {
+            "description": "\n- Fetches content from a specified URL and processes it using an AI model\n- Takes a URL and a prompt as input\n- Fetches the URL content, converts HTML to markdown\n- Processes the content with the prompt using a small, fast model\n- Returns the model's response about the content\n- Use this tool when you need to retrieve and analyze web content\n\nUsage notes:\n  - IMPORTANT: If an MCP-provided web fetch tool is available, prefer using that tool instead of this one, as it may have fewer restrictions.\n  - The URL must be a fully-formed valid URL\n  - HTTP URLs will be automatically upgraded to HTTPS\n  - The prompt should describe what information you want to extract from the page\n  - This tool is read-only and does not modify any files\n  - Results may be summarized if the content is very large\n  - Includes a self-cleaning 15-minute cache for faster responses when repeatedly accessing the same URL\n  - When a URL redirects to a different host, the tool will inform you and provide the redirect URL in a special format. You should then make a new WebFetch request with the redirect URL to fetch the content.\n",
+            "input_schema": {
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "additionalProperties": false,
+              "properties": {
+                "prompt": {
+                  "description": "The prompt to run on the fetched content",
+                  "type": "string"
+                },
+                "url": {
+                  "description": "The URL to fetch content from",
+                  "format": "uri",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "url",
+                "prompt"
+              ],
+              "type": "object"
+            },
+            "name": "WebFetch"
+          },
+          {
+            "description": "Use this tool to create and manage a structured task list for your current coding session. This helps you track progress, organize complex tasks, and demonstrate thoroughness to the user.\nIt also helps the user understand the progress of the task and overall progress of their requests.\n\n## When to Use This Tool\nUse this tool proactively in these scenarios:\n\n1. Complex multi-step tasks - When a task requires 3 or more distinct steps or actions\n2. Non-trivial and complex tasks - Tasks that require careful planning or multiple operations\n3. User explicitly requests todo list - When the user directly asks you to use the todo list\n4. User provides multiple tasks - When users provide a list of things to be done (numbered or comma-separated)\n5. After receiving new instructions - Immediately capture user requirements as todos\n6. When you start working on a task - Mark it as in_progress BEFORE beginning work. Ideally you should only have one todo as in_progress at a time\n7. After completing a task - Mark it as completed and add any new follow-up tasks discovered during implementation\n\n## When NOT to Use This Tool\n\nSkip using this tool when:\n1. There is only a single, straightforward task\n2. The task is trivial and tracking it provides no organizational benefit\n3. The task can be completed in less than 3 trivial steps\n4. The task is purely conversational or informational\n\nNOTE that you should not use this tool if there is only one trivial task to do. In this case you are better off just doing the task directly.\n\n## Examples of When to Use the Todo List\n\n<example>\nUser: I want to add a dark mode toggle to the application settings. Make sure you run the tests and build when you're done!\nAssistant: I'll help add a dark mode toggle to your application settings. Let me create a todo list to track this implementation.\n*Creates todo list with the following items:*\n1. Creating dark mode toggle component in Settings page\n2. Adding dark mode state management (context/store)\n3. Implementing CSS-in-JS styles for dark theme\n4. Updating existing components to support theme switching\n5. Running tests and build process, addressing any failures or errors that occur\n*Begins working on the first task*\n\n<reasoning>\nThe assistant used the todo list because:\n1. Adding dark mode is a multi-step feature requiring UI, state management, and styling changes\n2. The user explicitly requested tests and build be run afterward\n3. The assistant inferred that tests and build need to pass by adding \"Ensure tests and build succeed\" as the final task\n</reasoning>\n</example>\n\n<example>\nUser: Help me rename the function getCwd to getCurrentWorkingDirectory across my project\nAssistant: Let me first search through your codebase to find all occurrences of 'getCwd'.\n*Uses grep or search tools to locate all instances of getCwd in the codebase*\nAssistant: I've found 15 instances of 'getCwd' across 8 different files. Let me create a todo list to track these changes.\n*Creates todo list with specific items for each file that needs updating*\n\n<reasoning>\nThe assistant used the todo list because:\n1. First, the assistant searched to understand the scope of the task\n2. Upon finding multiple occurrences across different files, it determined this was a complex task with multiple steps\n3. The todo list helps ensure every instance is tracked and updated systematically\n4. This approach prevents missing any occurrences and maintains code consistency\n</reasoning>\n</example>\n\n\n<example>\nUser: I need to implement these features for my e-commerce site: user registration, product catalog, shopping cart, and checkout flow.\nAssistant: I'll help implement these features. First, let's add all the features to the todo list.\n*Creates a todo list breaking down each feature into specific tasks based on the project architecture*\nAssistant: Let's start with user registration. This will involve creating database models, API endpoints, and frontend forms that integrate with your existing authentication system.\n\n<reasoning>\nThe assistant used the todo list because:\n1. The user provided multiple complex features to implement in a comma separated list\n2. The todo list helps organize these large features into manageable tasks\n3. This approach allows for tracking progress across the entire implementation\n</reasoning>\n</example>\n\n<example>\nUser: Can you help optimize my React application? It's rendering slowly and has performance issues.</user>\nAssistant: I'll help optimize your React application. First, let me examine your codebase to identify potential performance bottlenecks.\n*Reviews component structure, render patterns, state management, and data fetching*\nAssistant: After analyzing your codebase, I've identified several performance issues. Let me create a todo list to track our optimization efforts.\n*Creates todo list with items like: 1) Implementing memoization for expensive calculations in ProductList, 2) Adding virtualization for long lists in Dashboard, 3) Optimizing image loading in Gallery component, 4) Fixing state update loops in ShoppingCart, 5) Reviewing bundle size and implementing code splitting*\nLet's start by implementing memoization for the expensive calculations in your ProductList component.</assistant>\n\n<reasoning>\nThe assistant used the todo list because:\n1. First, the assistant examined the codebase to identify specific performance issues\n2. Based on this analysis, it identified multiple optimization opportunities\n3. Performance optimization is a non-trivial task requiring multiple steps\n4. The todo list helps methodically track improvements across different components\n5. This systematic approach ensures all performance bottlenecks are addressed\n</reasoning>\n</example>\n\n## Examples of When NOT to Use the Todo List\n\n<example>\nUser: How do I print 'Hello World' in Python?\nAssistant: In Python, you can print \"Hello World\" with this simple code:\n\npython\nprint(\"Hello World\")\n\nThis will output the text \"Hello World\" to the console when executed.</assistant>\n\n<reasoning>\nThe assistant did not use the todo list because this is a single, trivial task that can be completed in one step. There's no need to track multiple tasks or steps for such a straightforward request.\n</reasoning>\n</example>\n\n<example>\nUser: What does the git status command do?\nAssistant: The git status command shows the current state of your working directory and staging area. It displays which changes have been staged, which haven't, and which files aren't being tracked by Git. This is a fundamental command for understanding the current state of your repository before making commits.\n\n<reasoning>\nThe assistant did not use the todo list because this is an informational request with no actual coding task to complete. The user is simply asking for an explanation, not for the assistant to perform multiple steps or tasks.\n</reasoning>\n</example>\n\n<example>\nUser: Can you add a comment to the calculateTotal function to explain what it does?\nAssistant: Sure, let me add a comment to the calculateTotal function to explain what it does.\n* Uses the Edit tool to add a comment to the calculateTotal function *\n\n<reasoning>\nThe assistant did not use the todo list because this is a single, straightforward task confined to one location in the code. Adding a comment doesn't require tracking multiple steps or systematic organization.\n</reasoning>\n</example>\n\n<example>\nUser: Run npm install for me and tell me what happens.\nAssistant: I'll run the npm install command for you.\n\n*Executes: npm install*\n\nThe command completed successfully. Here's the output:\n[Output of npm install command]\n\nAll dependencies have been installed according to your package.json file.\n\n<reasoning>\nThe assistant did not use the todo list because this is a single command execution with immediate results. There are no multiple steps to track or organize, making the todo list unnecessary for this straightforward task.\n</reasoning>\n</example>\n\n## Task States and Management\n\n1. **Task States**: Use these states to track progress:\n   - pending: Task not yet started\n   - in_progress: Currently working on (limit to ONE task at a time)\n   - completed: Task finished successfully\n\n   **IMPORTANT**: Task descriptions must have two forms:\n   - content: The imperative form describing what needs to be done (e.g., \"Run tests\", \"Build the project\")\n   - activeForm: The present continuous form shown during execution (e.g., \"Running tests\", \"Building the project\")\n\n2. **Task Management**:\n   - Update task status in real-time as you work\n   - Mark tasks complete IMMEDIATELY after finishing (don't batch completions)\n   - Exactly ONE task must be in_progress at any time (not less, not more)\n   - Complete current tasks before starting new ones\n   - Remove tasks that are no longer relevant from the list entirely\n\n3. **Task Completion Requirements**:\n   - ONLY mark a task as completed when you have FULLY accomplished it\n   - If you encounter errors, blockers, or cannot finish, keep the task as in_progress\n   - When blocked, create a new task describing what needs to be resolved\n   - Never mark a task as completed if:\n     - Tests are failing\n     - Implementation is partial\n     - You encountered unresolved errors\n     - You couldn't find necessary files or dependencies\n\n4. **Task Breakdown**:\n   - Create specific, actionable items\n   - Break complex tasks into smaller, manageable steps\n   - Use clear, descriptive task names\n   - Always provide both forms:\n     - content: \"Fix authentication bug\"\n     - activeForm: \"Fixing authentication bug\"\n\nWhen in doubt, use this tool. Being proactive with task management demonstrates attentiveness and ensures you complete all requirements successfully.\n",
+            "input_schema": {
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "additionalProperties": false,
+              "properties": {
+                "todos": {
+                  "description": "The updated todo list",
+                  "items": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "activeForm": {
+                        "minLength": 1,
+                        "type": "string"
+                      },
+                      "content": {
+                        "minLength": 1,
+                        "type": "string"
+                      },
+                      "status": {
+                        "enum": [
+                          "pending",
+                          "in_progress",
+                          "completed"
+                        ],
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "content",
+                      "status",
+                      "activeForm"
+                    ],
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "required": [
+                "todos"
+              ],
+              "type": "object"
+            },
+            "name": "TodoWrite"
+          },
+          {
+            "description": "\n- Allows Claude to search the web and use the results to inform responses\n- Provides up-to-date information for current events and recent data\n- Returns search result information formatted as search result blocks, including links as markdown hyperlinks\n- Use this tool for accessing information beyond Claude's knowledge cutoff\n- Searches are performed automatically within a single API call\n\nCRITICAL REQUIREMENT - You MUST follow this:\n  - After answering the user's question, you MUST include a \"Sources:\" section at the end of your response\n  - In the Sources section, list all relevant URLs from the search results as markdown hyperlinks: [Title](URL)\n  - This is MANDATORY - never skip including sources in your response\n  - Example format:\n\n    [Your answer here]\n\n    Sources:\n    - [Source Title 1](https://example.com/1)\n    - [Source Title 2](https://example.com/2)\n\nUsage notes:\n  - Domain filtering is supported to include or block specific websites\n  - Web search is only available in the US\n\nIMPORTANT - Use the correct year in search queries:\n  - Today's date is 2025-12-31. You MUST use this year when searching for recent information, documentation, or current events.\n  - Example: If today is 2025-07-15 and the user asks for \"latest React docs\", search for \"React documentation 2025\", NOT \"React documentation 2024\"\n",
+            "input_schema": {
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "additionalProperties": false,
+              "properties": {
+                "allowed_domains": {
+                  "description": "Only include search results from these domains",
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "blocked_domains": {
+                  "description": "Never include search results from these domains",
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "query": {
+                  "description": "The search query to use",
+                  "minLength": 2,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "query"
+              ],
+              "type": "object"
+            },
+            "name": "WebSearch"
+          },
+          {
+            "description": "\n- Kills a running background bash shell by its ID\n- Takes a shell_id parameter identifying the shell to kill\n- Returns a success or failure status \n- Use this tool when you need to terminate a long-running shell\n- Shell IDs can be found using the /tasks command\n",
+            "input_schema": {
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "additionalProperties": false,
+              "properties": {
+                "shell_id": {
+                  "description": "The ID of the background shell to kill",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "shell_id"
+              ],
+              "type": "object"
+            },
+            "name": "KillShell"
+          },
+          {
+            "description": "Use this tool when you need to ask the user questions during execution. This allows you to:\n1. Gather user preferences or requirements\n2. Clarify ambiguous instructions\n3. Get decisions on implementation choices as you work\n4. Offer choices to the user about what direction to take.\n\nUsage notes:\n- Users will always be able to select \"Other\" to provide custom text input\n- Use multiSelect: true to allow multiple answers to be selected for a question\n- If you recommend a specific option, make that the first option in the list and add \"(Recommended)\" at the end of the label\n",
+            "input_schema": {
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "additionalProperties": false,
+              "properties": {
+                "answers": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "description": "User answers collected by the permission component",
+                  "type": "object"
+                },
+                "questions": {
+                  "description": "Questions to ask the user (1-4 questions)",
+                  "items": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "header": {
+                        "description": "Very short label displayed as a chip/tag (max 12 chars). Examples: \"Auth method\", \"Library\", \"Approach\".",
+                        "type": "string"
+                      },
+                      "multiSelect": {
+                        "description": "Set to true to allow the user to select multiple options instead of just one. Use when choices are not mutually exclusive.",
+                        "type": "boolean"
+                      },
+                      "options": {
+                        "description": "The available choices for this question. Must have 2-4 options. Each option should be a distinct, mutually exclusive choice (unless multiSelect is enabled). There should be no 'Other' option, that will be provided automatically.",
+                        "items": {
+                          "additionalProperties": false,
+                          "properties": {
+                            "description": {
+                              "description": "Explanation of what this option means or what will happen if chosen. Useful for providing context about trade-offs or implications.",
+                              "type": "string"
+                            },
+                            "label": {
+                              "description": "The display text for this option that the user will see and select. Should be concise (1-5 words) and clearly describe the choice.",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "label",
+                            "description"
+                          ],
+                          "type": "object"
+                        },
+                        "maxItems": 4,
+                        "minItems": 2,
+                        "type": "array"
+                      },
+                      "question": {
+                        "description": "The complete question to ask the user. Should be clear, specific, and end with a question mark. Example: \"Which library should we use for date formatting?\" If multiSelect is true, phrase it accordingly, e.g. \"Which features do you want to enable?\"",
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "question",
+                      "header",
+                      "options",
+                      "multiSelect"
+                    ],
+                    "type": "object"
+                  },
+                  "maxItems": 4,
+                  "minItems": 1,
+                  "type": "array"
+                }
+              },
+              "required": [
+                "questions"
+              ],
+              "type": "object"
+            },
+            "name": "AskUserQuestion"
+          },
+          {
+            "description": "Execute a skill within the main conversation\n\n<skills_instructions>\nWhen users ask you to perform tasks, check if any of the available skills below can help complete the task more effectively. Skills provide specialized capabilities and domain knowledge.\n\nHow to invoke:\n- Use this tool with the skill name only (no arguments)\n- Examples:\n  - `skill: \"pdf\"` - invoke the pdf skill\n  - `skill: \"xlsx\"` - invoke the xlsx skill\n  - `skill: \"ms-office-suite:pdf\"` - invoke using fully qualified name\n\nImportant:\n- When a skill is relevant, you must invoke this tool IMMEDIATELY as your first action\n- NEVER just announce or mention a skill in your text response without actually calling this tool\n- This is a BLOCKING REQUIREMENT: invoke the relevant Skill tool BEFORE generating any other response about the task\n- Only use skills listed in <available_skills> below\n- Do not invoke a skill that is already running\n- Do not use this tool for built-in CLI commands (like /help, /clear, etc.)\n</skills_instructions>\n\n<available_skills>\n\n</available_skills>\n",
+            "input_schema": {
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "additionalProperties": false,
+              "properties": {
+                "skill": {
+                  "description": "The skill name (no arguments). E.g., \"pdf\" or \"xlsx\"",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "skill"
+              ],
+              "type": "object"
+            },
+            "name": "Skill"
+          },
+          {
+            "description": "Execute a slash command within the main conversation\n\nHow slash commands work:\nWhen you use this tool or when a user types a slash command, you will see <command-message>{name} is running…</command-message> followed by the expanded prompt. For example, if .claude/commands/foo.md contains \"Print today's date\", then /foo expands to that prompt in the next message.\n\nUsage:\n- `command` (required): The slash command to execute, including any arguments\n- Example: `command: \"/review-pr 123\"`\n\nIMPORTANT: Only use this tool for custom slash commands that appear in the Available Commands list below. Do NOT use for:\n- Built-in CLI commands (like /help, /clear, etc.)\n- Commands not shown in the list\n- Commands you think might exist but aren't listed\n\nNotes:\n- When a user requests multiple slash commands, execute each one sequentially and check for <command-message>{name} is running…</command-message> to verify each has been processed\n- Do not invoke a command that is already running. For example, if you see <command-message>foo is running…</command-message>, do NOT use this tool with \"/foo\" - process the expanded prompt in the following message\n- Only custom slash commands with descriptions are listed in Available Commands. If a user's command is not listed, ask them to check the slash command file and consult the docs.\n",
+            "input_schema": {
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "additionalProperties": false,
+              "properties": {
+                "command": {
+                  "description": "The slash command to execute with its arguments, e.g., \"/review-pr 123\"",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "command"
+              ],
+              "type": "object"
+            },
+            "name": "SlashCommand"
+          },
+          {
+            "description": "Use this tool proactively when you're about to start a non-trivial implementation task. Getting user sign-off on your approach before writing code prevents wasted effort and ensures alignment. This tool transitions you into plan mode where you can explore the codebase and design an implementation approach for user approval.\n\n## When to Use This Tool\n\n**Prefer using EnterPlanMode** for implementation tasks unless they're simple. Use it when ANY of these conditions apply:\n\n1. **New Feature Implementation**: Adding meaningful new functionality\n   - Example: \"Add a logout button\" - where should it go? What should happen on click?\n   - Example: \"Add form validation\" - what rules? What error messages?\n\n2. **Multiple Valid Approaches**: The task can be solved in several different ways\n   - Example: \"Add caching to the API\" - could use Redis, in-memory, file-based, etc.\n   - Example: \"Improve performance\" - many optimization strategies possible\n\n3. **Code Modifications**: Changes that affect existing behavior or structure\n   - Example: \"Update the login flow\" - what exactly should change?\n   - Example: \"Refactor this component\" - what's the target architecture?\n\n4. **Architectural Decisions**: The task requires choosing between patterns or technologies\n   - Example: \"Add real-time updates\" - WebSockets vs SSE vs polling\n   - Example: \"Implement state management\" - Redux vs Context vs custom solution\n\n5. **Multi-File Changes**: The task will likely touch more than 2-3 files\n   - Example: \"Refactor the authentication system\"\n   - Example: \"Add a new API endpoint with tests\"\n\n6. **Unclear Requirements**: You need to explore before understanding the full scope\n   - Example: \"Make the app faster\" - need to profile and identify bottlenecks\n   - Example: \"Fix the bug in checkout\" - need to investigate root cause\n\n7. **User Preferences Matter**: The implementation could reasonably go multiple ways\n   - If you would use AskUserQuestion to clarify the approach, use EnterPlanMode instead\n   - Plan mode lets you explore first, then present options with context\n\n## When NOT to Use This Tool\n\nOnly skip EnterPlanMode for simple tasks:\n- Single-line or few-line fixes (typos, obvious bugs, small tweaks)\n- Adding a single function with clear requirements\n- Tasks where the user has given very specific, detailed instructions\n- Pure research/exploration tasks (use the Task tool with explore agent instead)\n\n## What Happens in Plan Mode\n\nIn plan mode, you'll:\n1. Thoroughly explore the codebase using Glob, Grep, and Read tools\n2. Understand existing patterns and architecture\n3. Design an implementation approach\n4. Present your plan to the user for approval\n5. Use AskUserQuestion if you need to clarify approaches\n6. Exit plan mode with ExitPlanMode when ready to implement\n\n## Examples\n\n### GOOD - Use EnterPlanMode:\nUser: \"Add user authentication to the app\"\n- Requires architectural decisions (session vs JWT, where to store tokens, middleware structure)\n\nUser: \"Optimize the database queries\"\n- Multiple approaches possible, need to profile first, significant impact\n\nUser: \"Implement dark mode\"\n- Architectural decision on theme system, affects many components\n\nUser: \"Add a delete button to the user profile\"\n- Seems simple but involves: where to place it, confirmation dialog, API call, error handling, state updates\n\nUser: \"Update the error handling in the API\"\n- Affects multiple files, user should approve the approach\n\n### BAD - Don't use EnterPlanMode:\nUser: \"Fix the typo in the README\"\n- Straightforward, no planning needed\n\nUser: \"Add a console.log to debug this function\"\n- Simple, obvious implementation\n\nUser: \"What files handle routing?\"\n- Research task, not implementation planning\n\n## Important Notes\n\n- This tool REQUIRES user approval - they must consent to entering plan mode\n- If unsure whether to use it, err on the side of planning - it's better to get alignment upfront than to redo work\n- Users appreciate being consulted before significant changes are made to their codebase\n",
+            "input_schema": {
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "additionalProperties": false,
+              "properties": {},
+              "type": "object"
+            },
+            "name": "EnterPlanMode"
+          },
+          {
+            "description": "Resolves a package/product name to a Context7-compatible library ID and returns matching libraries.\n\nYou MUST call this function before 'query-docs' to obtain a valid Context7-compatible library ID UNLESS the user explicitly provides a library ID in the format '/org/project' or '/org/project/version' in their query.\n\nSelection Process:\n1. Analyze the query to understand what library/package the user is looking for\n2. Return the most relevant match based on:\n- Name similarity to the query (exact matches prioritized)\n- Description relevance to the query's intent\n- Documentation coverage (prioritize libraries with higher Code Snippet counts)\n- Source reputation (consider libraries with High or Medium reputation more authoritative)\n- Benchmark Score: Quality indicator (100 is the highest score)\n\nResponse Format:\n- Return the selected library ID in a clearly marked section\n- Provide a brief explanation for why this library was chosen\n- If multiple good matches exist, acknowledge this but proceed with the most relevant one\n- If no good matches exist, clearly state this and suggest query refinements\n\nFor ambiguous queries, request clarification before proceeding with a best-guess match.\n\nIMPORTANT: Do not call this tool more than 3 times per question. If you cannot find what you need after 3 calls, use the best result you have.",
+            "input_schema": {
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "additionalProperties": false,
+              "properties": {
+                "libraryName": {
+                  "description": "Library name to search for and retrieve a Context7-compatible library ID.",
+                  "type": "string"
+                },
+                "query": {
+                  "description": "The user's original question or task. This is used to rank library results by relevance to what the user is trying to accomplish. IMPORTANT: Do not include any sensitive or confidential information such as API keys, passwords, credentials, or personal data in your query.",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "query",
+                "libraryName"
+              ],
+              "type": "object"
+            },
+            "name": "mcp__context7__resolve-library-id"
+          },
+          {
+            "description": "Retrieves and queries up-to-date documentation and code examples from Context7 for any programming library or framework.\n\nYou must call 'resolve-library-id' first to obtain the exact Context7-compatible library ID required to use this tool, UNLESS the user explicitly provides a library ID in the format '/org/project' or '/org/project/version' in their query.\n\nIMPORTANT: Do not call this tool more than 3 times per question. If you cannot find what you need after 3 calls, use the best information you have.",
+            "input_schema": {
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "additionalProperties": false,
+              "properties": {
+                "libraryId": {
+                  "description": "Exact Context7-compatible library ID (e.g., '/mongodb/docs', '/vercel/next.js', '/supabase/supabase', '/vercel/next.js/v14.3.0-canary.87') retrieved from 'resolve-library-id' or directly from user query in the format '/org/project' or '/org/project/version'.",
+                  "type": "string"
+                },
+                "query": {
+                  "description": "The question or task you need help with. Be specific and include relevant details. Good: 'How to set up authentication with JWT in Express.js' or 'React useEffect cleanup function examples'. Bad: 'auth' or 'hooks'. IMPORTANT: Do not include any sensitive or confidential information such as API keys, passwords, credentials, or personal data in your query.",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "libraryId",
+                "query"
+              ],
+              "type": "object"
+            },
+            "name": "mcp__context7__query-docs"
+          },
+          {
+            "description": "Update the status of a subtask in implementation_plan.json. Use this when completing or starting a subtask.",
+            "input_schema": {
+              "properties": {
+                "notes": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                },
+                "subtask_id": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "subtask_id",
+                "status",
+                "notes"
+              ],
+              "type": "object"
+            },
+            "name": "mcp__auto-claude__update_subtask_status"
+          },
+          {
+            "description": "Get the current build progress including completed subtasks, pending subtasks, and next subtask to work on.",
+            "input_schema": {
+              "properties": {},
+              "required": [],
+              "type": "object"
+            },
+            "name": "mcp__auto-claude__get_build_progress"
+          },
+          {
+            "description": "Record a codebase discovery to session memory. Use this when you learn something important about the codebase.",
+            "input_schema": {
+              "properties": {
+                "category": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "file_path": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "file_path",
+                "description",
+                "category"
+              ],
+              "type": "object"
+            },
+            "name": "mcp__auto-claude__record_discovery"
+          },
+          {
+            "description": "Record a gotcha or pitfall to avoid. Use this when you encounter something that future sessions should know.",
+            "input_schema": {
+              "properties": {
+                "context": {
+                  "type": "string"
+                },
+                "gotcha": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "gotcha",
+                "context"
+              ],
+              "type": "object"
+            },
+            "name": "mcp__auto-claude__record_gotcha"
+          },
+          {
+            "description": "Get context from previous sessions including discoveries, gotchas, and patterns.",
+            "input_schema": {
+              "properties": {},
+              "required": [],
+              "type": "object"
+            },
+            "name": "mcp__auto-claude__get_session_context"
+          },
+          {
+            "description": "Update the QA sign-off status in implementation_plan.json. Use after QA review.",
+            "input_schema": {
+              "properties": {
+                "issues": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                },
+                "tests_passed": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "status",
+                "issues",
+                "tests_passed"
+              ],
+              "type": "object"
+            },
+            "name": "mcp__auto-claude__update_qa_status"
+          }
+        ]
+      },
+      "headers": {
+        "accept": "application/json",
+        "accept-encoding": "gzip, deflate, br, zstd",
+        "anthropic-beta": "claude-code-20250219,interleaved-thinking-2025-05-14,context-management-2025-06-27",
+        "anthropic-dangerous-direct-browser-access": "true",
+        "anthropic-version": "2023-06-01",
+        "connection": "keep-alive",
+        "content-length": "134333",
+        "content-type": "application/json",
+        "host": "127.0.0.1:8999",
+        "user-agent": "claude-cli/2.0.72 (external, sdk-py, agent-sdk/0.1.18)",
+        "x-app": "cli",
+        "x-stainless-arch": "arm64",
+        "x-stainless-lang": "js",
+        "x-stainless-os": "MacOS",
+        "x-stainless-package-version": "0.70.0",
+        "x-stainless-retry-count": "0",
+        "x-stainless-runtime": "node",
+        "x-stainless-runtime-version": "v24.3.0",
+        "x-stainless-timeout": "600"
+      },
+      "messages": [
+        {
+          "content": "## YOUR ROLE - ROADMAP FEATURE GENERATOR AGENT\n\nYou are the **Roadmap Feature Generator Agent** in the Auto-Build framework. Your job is to analyze the project discovery data and generate a strategic list of features, prioritized and organized into phases.\n\n**Key Principle**: Generate valuable, actionable features based on user needs and product vision. Prioritize ruthlessly.\n\n---\n\n## YOUR CONTRACT\n\n**Input**:\n- `roadmap_discovery.json` (project understanding)\n- `project_index.json` (codebase structure)\n- `competitor_analysis.json` (optional - competitor insights if available)\n\n**Output**: `roadmap.json` (complete roadmap with prioritized features)\n\nYou MUST create `roadmap.json` with this EXACT structure:\n\n```json\n{\n  \"id\": \"roadmap-[timestamp]\",\n  \"project_name\": \"Name of the project\",\n  \"version\": \"1.0\",\n  \"vision\": \"Product vision one-liner\",\n  \"target_audience\": {\n    \"primary\": \"Primary persona\",\n    \"secondary\": [\"Secondary personas\"]\n  },\n  \"phases\": [\n    {\n      \"id\": \"phase-1\",\n      \"name\": \"Foundation / MVP\",\n      \"description\": \"What this phase achieves\",\n      \"order\": 1,\n      \"status\": \"planned\",\n      \"features\": [\"feature-id-1\", \"feature-id-2\"],\n      \"milestones\": [\n        {\n          \"id\": \"milestone-1-1\",\n          \"title\": \"Milestone name\",\n          \"description\": \"What this milestone represents\",\n          \"features\": [\"feature-id-1\"],\n          \"status\": \"planned\"\n        }\n      ]\n    }\n  ],\n  \"features\": [\n    {\n      \"id\": \"feature-1\",\n      \"title\": \"Feature name\",\n      \"description\": \"What this feature does\",\n      \"rationale\": \"Why this feature matters for the target audience\",\n      \"priority\": \"must\",\n      \"complexity\": \"medium\",\n      \"impact\": \"high\",\n      \"phase_id\": \"phase-1\",\n      \"dependencies\": [],\n      \"status\": \"idea\",\n      \"acceptance_criteria\": [\n        \"Criterion 1\",\n        \"Criterion 2\"\n      ],\n      \"user_stories\": [\n        \"As a [user], I want to [action] so that [benefit]\"\n      ],\n      \"competitor_insight_ids\": [\"insight-id-1\"]\n    }\n  ],\n  \"metadata\": {\n    \"created_at\": \"ISO timestamp\",\n    \"updated_at\": \"ISO timestamp\",\n    \"generated_by\": \"roadmap_features agent\",\n    \"prioritization_framework\": \"MoSCoW\"\n  }\n}\n```\n\n**DO NOT** proceed without creating this file.\n\n---\n\n## PHASE 0: LOAD CONTEXT\n\n```bash\n# Read discovery data\ncat roadmap_discovery.json\n\n# Read project structure\ncat project_index.json\n\n# Check for existing features or TODOs\ngrep -r \"TODO\\|FEATURE\\|IDEA\" --include=\"*.md\" . 2>/dev/null | head -30\n\n# Check for competitor analysis data (if enabled by user)\ncat competitor_analysis.json 2>/dev/null || echo \"No competitor analysis available\"\n```\n\nExtract key information:\n- Target audience and their pain points\n- Product vision and value proposition\n- Current features and gaps\n- Constraints and dependencies\n- Competitor pain points and market gaps (if competitor_analysis.json exists)\n\n---\n\n## PHASE 1: FEATURE BRAINSTORMING\n\nBased on the discovery data, generate features that address:\n\n### 1.1 User Pain Points\nFor each pain point in `target_audience.pain_points`, consider:\n- What feature would directly address this?\n- What's the minimum viable solution?\n\n### 1.2 User Goals\nFor each goal in `target_audience.goals`, consider:\n- What features help users achieve this goal?\n- What workflow improvements would help?\n\n### 1.3 Known Gaps\nFor each gap in `current_state.known_gaps`, consider:\n- What feature would fill this gap?\n- Is this a must-have or nice-to-have?\n\n### 1.4 Competitive Differentiation\nBased on `competitive_context.differentiators`, consider:\n- What features would strengthen these differentiators?\n- What features would help win against alternatives?\n\n### 1.5 Technical Improvements\nBased on `current_state.technical_debt`, consider:\n- What refactoring or improvements are needed?\n- What would improve developer experience?\n\n### 1.6 Competitor Pain Points (if competitor_analysis.json exists)\n\n**IMPORTANT**: If `competitor_analysis.json` is available, this becomes a HIGH-PRIORITY source for feature ideas.\n\nFor each pain point in `competitor_analysis.json` → `insights_summary.top_pain_points`, consider:\n- What feature would directly address this pain point better than competitors?\n- Can we turn competitor weaknesses into our strengths?\n- What market gaps (from `market_gaps`) can we fill?\n\nFor each competitor in `competitor_analysis.json` → `competitors`:\n- Review their `pain_points` array for user frustrations\n- Use the `id` of each pain point for the `competitor_insight_ids` field when creating features\n\n**Linking Features to Competitor Insights**:\nWhen a feature addresses a competitor pain point:\n1. Add the pain point's `id` to the feature's `competitor_insight_ids` array\n2. Reference the competitor and pain point in the feature's `rationale`\n3. Consider boosting the feature's priority if it addresses multiple competitor weaknesses\n\n---\n\n## PHASE 2: PRIORITIZATION (MoSCoW)\n\nApply MoSCoW prioritization to each feature:\n\n**MUST HAVE** (priority: \"must\")\n- Critical for MVP or current phase\n- Users cannot function without this\n- Legal/compliance requirements\n- **Addresses critical competitor pain points** (if competitor_analysis.json exists)\n\n**SHOULD HAVE** (priority: \"should\")\n- Important but not critical\n- Significant value to users\n- Can wait for next phase if needed\n- **Addresses common competitor pain points** (if competitor_analysis.json exists)\n\n**COULD HAVE** (priority: \"could\")\n- Nice to have, enhances experience\n- Can be descoped without major impact\n- Good for future phases\n\n**WON'T HAVE** (priority: \"wont\")\n- Not planned for foreseeable future\n- Out of scope for current vision\n- Document for completeness but don't plan\n\n---\n\n## PHASE 3: COMPLEXITY & IMPACT ASSESSMENT\n\nFor each feature, assess:\n\n### Complexity (Low/Medium/High)\n- **Low**: 1-2 files, single component, < 1 day\n- **Medium**: 3-10 files, multiple components, 1-3 days\n- **High**: 10+ files, architectural changes, > 3 days\n\n### Impact (Low/Medium/High)\n- **High**: Core user need, differentiator, revenue driver, **addresses competitor pain points**\n- **Medium**: Improves experience, addresses secondary needs\n- **Low**: Edge cases, polish, nice-to-have\n\n### Priority Matrix\n```\nHigh Impact + Low Complexity = DO FIRST (Quick Wins)\nHigh Impact + High Complexity = PLAN CAREFULLY (Big Bets)\nLow Impact + Low Complexity = DO IF TIME (Fill-ins)\nLow Impact + High Complexity = AVOID (Time Sinks)\n```\n\n---\n\n## PHASE 4: PHASE ORGANIZATION\n\nOrganize features into logical phases:\n\n### Phase 1: Foundation / MVP\n- Must-have features\n- Core functionality\n- Quick wins (high impact + low complexity)\n\n### Phase 2: Enhancement\n- Should-have features\n- User experience improvements\n- Medium complexity features\n\n### Phase 3: Scale / Growth\n- Could-have features\n- Advanced functionality\n- Performance optimizations\n\n### Phase 4: Future / Vision\n- Long-term features\n- Experimental ideas\n- Market expansion features\n\n---\n\n## PHASE 5: DEPENDENCY MAPPING\n\nIdentify dependencies between features:\n\n```\nFeature A depends on Feature B if:\n- A requires B's functionality to work\n- A modifies code that B creates\n- A uses APIs that B introduces\n```\n\nEnsure dependencies are reflected in phase ordering.\n\n---\n\n## PHASE 6: MILESTONE CREATION\n\nCreate meaningful milestones within each phase:\n\nGood milestones are:\n- **Demonstrable**: Can show progress to stakeholders\n- **Testable**: Can verify completion\n- **Valuable**: Deliver user value, not just code\n\nExample milestones:\n- \"Users can create and save documents\"\n- \"Payment processing is live\"\n- \"Mobile app is on App Store\"\n\n---\n\n## PHASE 7: CREATE ROADMAP.JSON (MANDATORY)\n\n**You MUST create this file. The orchestrator will fail if you don't.**\n\n```bash\ncat > roadmap.json << 'EOF'\n{\n  \"id\": \"roadmap-[TIMESTAMP]\",\n  \"project_name\": \"[from discovery]\",\n  \"version\": \"1.0\",\n  \"vision\": \"[from discovery.product_vision.one_liner]\",\n  \"target_audience\": {\n    \"primary\": \"[from discovery]\",\n    \"secondary\": [\"[from discovery]\"]\n  },\n  \"phases\": [\n    {\n      \"id\": \"phase-1\",\n      \"name\": \"Foundation\",\n      \"description\": \"[description of this phase]\",\n      \"order\": 1,\n      \"status\": \"planned\",\n      \"features\": [\"[feature-ids]\"],\n      \"milestones\": [\n        {\n          \"id\": \"milestone-1-1\",\n          \"title\": \"[milestone title]\",\n          \"description\": \"[what this achieves]\",\n          \"features\": [\"[feature-ids]\"],\n          \"status\": \"planned\"\n        }\n      ]\n    }\n  ],\n  \"features\": [\n    {\n      \"id\": \"feature-1\",\n      \"title\": \"[Feature Title]\",\n      \"description\": \"[What it does]\",\n      \"rationale\": \"[Why it matters - include competitor pain point reference if applicable]\",\n      \"priority\": \"must|should|could|wont\",\n      \"complexity\": \"low|medium|high\",\n      \"impact\": \"low|medium|high\",\n      \"phase_id\": \"phase-1\",\n      \"dependencies\": [],\n      \"status\": \"idea\",\n      \"acceptance_criteria\": [\n        \"[Criterion 1]\",\n        \"[Criterion 2]\"\n      ],\n      \"user_stories\": [\n        \"As a [user], I want to [action] so that [benefit]\"\n      ],\n      \"competitor_insight_ids\": []\n    }\n  ],\n  \"metadata\": {\n    \"created_at\": \"[ISO timestamp]\",\n    \"updated_at\": \"[ISO timestamp]\",\n    \"generated_by\": \"roadmap_features agent\",\n    \"prioritization_framework\": \"MoSCoW\",\n    \"competitor_analysis_used\": false\n  }\n}\nEOF\n```\n\n**Note**: Set `competitor_analysis_used: true` in metadata if competitor_analysis.json was incorporated.\n\nVerify the file was created:\n\n```bash\ncat roadmap.json | head -100\n```\n\n---\n\n## PHASE 8: USER REVIEW\n\nPresent the roadmap to the user for review:\n\n> \"I've generated a roadmap with **[X] features** across **[Y] phases**.\n>\n> **Phase 1 - Foundation** ([Z] features):\n> [List key features with priorities]\n>\n> **Phase 2 - Enhancement** ([Z] features):\n> [List key features]\n>\n> Would you like to:\n> 1. Review and approve this roadmap\n> 2. Adjust priorities for any features\n> 3. Add additional features I may have missed\n> 4. Remove features that aren't relevant\"\n\nIncorporate feedback and update roadmap.json if needed.\n\n---\n\n## VALIDATION\n\nAfter creating roadmap.json, verify:\n\n1. Is it valid JSON?\n2. Does it have at least one phase?\n3. Does it have at least 3 features?\n4. Do all features have required fields (id, title, priority)?\n5. Are all feature IDs referenced in phases valid?\n\n---\n\n## COMPLETION\n\nSignal completion:\n\n```\n=== ROADMAP GENERATED ===\n\nProject: [name]\nVision: [one_liner]\nPhases: [count]\nFeatures: [count]\nCompetitor Analysis Used: [yes/no]\nFeatures Addressing Competitor Pain Points: [count]\n\nBreakdown by priority:\n- Must Have: [count]\n- Should Have: [count]\n- Could Have: [count]\n\nroadmap.json created successfully.\n```\n\n---\n\n## CRITICAL RULES\n\n1. **Generate at least 5-10 features** - A useful roadmap has actionable items\n2. **Every feature needs rationale** - Explain why it matters\n3. **Prioritize ruthlessly** - Not everything is a \"must have\"\n4. **Consider dependencies** - Don't plan impossible sequences\n5. **Include acceptance criteria** - Make features testable\n6. **Use user stories** - Connect features to user value\n7. **Leverage competitor analysis** - If `competitor_analysis.json` exists, prioritize features that address competitor pain points and include `competitor_insight_ids` to link features to specific insights\n\n---\n\n## FEATURE TEMPLATE\n\nFor each feature, ensure you capture:\n\n```json\n{\n  \"id\": \"feature-[number]\",\n  \"title\": \"Clear, action-oriented title\",\n  \"description\": \"2-3 sentences explaining the feature\",\n  \"rationale\": \"Why this matters for [primary persona]\",\n  \"priority\": \"must|should|could|wont\",\n  \"complexity\": \"low|medium|high\",\n  \"impact\": \"low|medium|high\",\n  \"phase_id\": \"phase-N\",\n  \"dependencies\": [\"feature-ids this depends on\"],\n  \"status\": \"idea\",\n  \"acceptance_criteria\": [\n    \"Given [context], when [action], then [result]\",\n    \"Users can [do thing]\",\n    \"[Metric] improves by [amount]\"\n  ],\n  \"user_stories\": [\n    \"As a [persona], I want to [action] so that [benefit]\"\n  ],\n  \"competitor_insight_ids\": [\"pain-point-id-1\", \"pain-point-id-2\"]\n}\n```\n\n**Note on `competitor_insight_ids`**:\n- This field is **optional** - only include when the feature addresses competitor pain points\n- The IDs should reference pain point IDs from `competitor_analysis.json` → `competitors[].pain_points[].id`\n- Features with `competitor_insight_ids` gain priority boost in the roadmap\n- Use empty array `[]` if the feature doesn't address any competitor insights\n\n---\n\n## BEGIN\n\nStart by reading roadmap_discovery.json to understand the project context, then systematically generate and prioritize features.\n\n\n---\n\n**Output Directory**: /Users/ameureka/Desktop/v0-mksaas-analycis-1/.auto-claude/roadmap\n**Project Directory**: /Users/ameureka/Desktop/v0-mksaas-analycis-1\n\n\n**Discovery File**: /Users/ameureka/Desktop/v0-mksaas-analycis-1/.auto-claude/roadmap/roadmap_discovery.json\n**Project Index**: /Users/ameureka/Desktop/v0-mksaas-analycis-1/.auto-claude/roadmap/project_index.json\n**Output File**: /Users/ameureka/Desktop/v0-mksaas-analycis-1/.auto-claude/roadmap/roadmap.json\n\nBased on the discovery data:\n1. Generate features that address user pain points\n2. Prioritize using MoSCoW framework\n3. Organize into phases\n4. Create milestones\n5. Map dependencies\n\nOutput the complete roadmap to roadmap.json.\n\n",
+          "name": null,
+          "role": "user",
+          "tool_calls": null,
+          "tool_result": null
+        },
+        {
+          "content": [
+            {
+              "text": "I'll start by loading the context from the discovery files to understand the project and generate a strategic roadmap.",
+              "type": "text"
+            }
+          ],
+          "name": null,
+          "role": "assistant",
+          "tool_calls": null,
+          "tool_result": null
+        },
+        {
+          "content": [],
+          "name": null,
+          "role": "user",
+          "tool_calls": null,
+          "tool_result": null
+        },
+        {
+          "content": [
+            {
+              "text": "Now let me check for any existing TODOs, features, or ideas in the codebase, and also check if there's a competitor analysis file:",
+              "type": "text"
+            }
+          ],
+          "name": null,
+          "role": "assistant",
+          "tool_calls": null,
+          "tool_result": null
+        },
+        {
+          "content": [],
+          "name": null,
+          "role": "user",
+          "tool_calls": null,
+          "tool_result": null
+        },
+        {
+          "content": [
+            {
+              "text": "Now I have a comprehensive understanding of the project. Let me also check for any feature plans in the claude-mem directory:",
+              "type": "text"
+            }
+          ],
+          "name": null,
+          "role": "assistant",
+          "tool_calls": null,
+          "tool_result": null
+        },
+        {
+          "content": [],
+          "name": null,
+          "role": "user",
+          "tool_calls": null,
+          "tool_result": null
+        },
+        {
+          "content": [
+            {
+              "text": "(no content)",
+              "type": "text"
+            }
+          ],
+          "name": null,
+          "role": "assistant",
+          "tool_calls": null,
+          "tool_result": null
+        },
+        {
+          "content": [],
+          "name": null,
+          "role": "user",
+          "tool_calls": null,
+          "tool_result": null
+        }
+      ],
+      "method": "POST",
+      "model": "claude-opus-4-5-20251101",
+      "original_model": null,
+      "parameters": {
+        "max_tokens": 21333,
+        "stream": false,
+        "temperature": 1.0
+      },
+      "path": "/v1/messages",
+      "size_bytes": 0,
+      "system_prompt": "You are a Claude agent, built on Anthropic's Claude Agent SDK.\nYou are an expert full-stack developer building production-quality software. Your working directory is: /Users/ameureka/Desktop/v0-mksaas-analycis-1\nYour filesystem access is RESTRICTED to this directory only. Use relative paths (starting with ./) for all file operations. Never use absolute paths or try to access files outside your working directory.\n\nYou follow existing code patterns, write clean maintainable code, and verify your work through thorough testing. You communicate progress through Git commits and build-progress.txt updates.\n\n# Project Instructions (from CLAUDE.md)\n\n# Ameureka V0: Vibe Coding Engineering Lab\n\n> **The Project Context Entry Point**\n>\n> 这是一个高度集成的**综合性工程实验室 (Monorepo Workspace)**，旨在实践和进化 \"Vibe Coding\" 方法论。这里不仅生产代码，更生产“编写软件的软件”以及配套的理论体系。\n\n## 1. 核心哲学 (Core Philosophy)\n*   **Vibe Coding**: 开发者从 \"Coder\" 进化为 \"Foreman\" (包工头/导演)。重心从 `How` (实现细节) 转移至 `What` (Specs/PRD) 和 `Why` (架构决策)。\n*   **Pipeline Driven**: 拒绝黑盒生成，坚持 **Conductor 模式** (Specs -> Plan -> Implement -> Verify)。\n*   **Dual AI Calibration**: 引入红蓝对抗思想。Builder (Auto-Claude) 构建功能，Breaker (Shannon) 进行攻击测试。\n\n## 2. 体系结构 (Ecosystem Structure)\n\n此工作区分为三个核心板块：\n\n### 🏛️ 实战演练场 (The Battlefield)\n*   **路径**: `mvp-code-ai-ppt-site/`\n*   **定位**: 验证方法论的旗舰 SaaS 产品 (PPTHub)。\n*   **技术栈**: Next.js 15, React 19, TypeScript, Drizzle ORM, TailwindCSS, Stripe, AI SDK.\n*   **关键动作**: 在此目录执行具体的功能开发，验证 `Auto-Claude` 的能力。\n\n### 🛠️ 基础设施 (The Infrastructure)\n*   **`claude-mem/`**: **记忆系统**。解决 LLM 上下文丢失问题，支持跨 Session 的知识检索。\n*   **`pro-Auto-Claude/`**: **下一代工具**。基于 Google Gemini CLI 架构分析，重构现有的自动化脚本，打造企业级 CLI 平台。\n*   **`000-vibecoding 基础设施/`**: 包含 `agent-foreman`, `skill-agent` 等原型工具。\n\n### 🧠 知识大脑 (The Brain)\n*   **`000-知识体系化方法论/`**: AI Hacker Agent, Prompt Engineering 理论。\n*   **`004-ebook 图书编写/`**: 记录从零构建此体系的过程（《如何实现长时间 2 小时运行》、《构建流水线 Pipeline》）。\n*   **`003-方法论产生过程记录/`**: 混沌到有序的思考快照。\n\n## 3. 常用命令 (Cheat Sheet)\n\n### Global\n*   **Environment**: 确保 `.env.local` 配置正确（参考各个子目录的 `.env.example`）。\n\n### SaaS MVP (`cd mvp-code-ai-ppt-site`)\n*   `pnpm dev`: 启动开发服务器 (Port 3005)。\n*   `pnpm db:push` / `pnpm db:studio`: 数据库迁移与管理。\n*   `pnpm email`: 预览邮件模板。\n*   `pnpm test:e2e`: 运行 Playwright 测试。\n\n### Claude Mem (`cd claude-mem`)\n*   `npm run build`: 构建项目。\n*   `npm run worker:start`: 启动记忆服务 (Port 37777)。\n\n### Auto-Claude Analysis (`cd pro-Auto-Claude`)\n*   查看 `analysis-summary.md` 获取架构重构指南。\n\n## 4. 开发协议 (Development Protocols)\n\n1.  **Conductor Mode**: 在接到复杂任务时，必须先制定 Plan，并按步骤执行。\n2.  **Spec-First**: 修改代码前，先确认 `docs/` 或 `specs/` 中的需求文档。\n3.  **Memory Aware**: 利用 `claude-mem` 检索历史上下文，避免重复提问。\n4.  **Language**:\n    *   **Thinking/Docs**: 中文 (Chinese) - 保持思维流畅。\n    *   **Code/Comments**: 英文 (English) - 保持国际化标准。\n\n## 5. 当前重点 (Current Focus)\n*   **Refactoring**: 将散乱的脚本整合进 `pro-Auto-Claude`，构建统一的 CLI。\n*   **Documentation**: 继续完善 `004-ebook`，沉淀 Vibe Coding 方法论。\n*   **Product Evolution**: 迭代 `mvp-code-ai-ppt-site`，引入更多 AI Agent 能力。\n",
+      "timestamp": "2025-12-31T08:52:16.790561Z",
+      "tools": null
+    },
+    "response": null,
+    "state": "Failed",
+    "timestamps": {
+      "created": "2025-12-31T08:52:16.790852Z",
+      "duration_ms": 67208,
+      "request_start": "2025-12-31T08:52:16.790561Z",
+      "response_end": "2025-12-31T08:53:23.999435Z"
+    }
+  }
+]
