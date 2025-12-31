@@ -1,0 +1,93 @@
+{
+    "wizard": {
+        "title": "设置向导",
+        "description": "通过几个简单步骤配置您的 Auto Claude 环境",
+        "helpText": "此向导将帮助您通过几个简单步骤设置环境。您可以配置 Claude OAuth 令牌、设置记忆功能并创建第一个任务。"
+    },
+    "welcome": {
+        "title": "欢迎使用 Auto Claude",
+        "subtitle": "使用 AI 驱动的代理自主构建软件",
+        "getStarted": "开始使用",
+        "skip": "跳过设置",
+        "features": {
+            "aiPowered": {
+                "title": "AI 驱动开发",
+                "description": "使用 Claude Code 代理生成代码和构建功能"
+            },
+            "specDriven": {
+                "title": "规格驱动工作流",
+                "description": "定义清晰规格的任务，让 Auto Claude 处理实现"
+            },
+            "memory": {
+                "title": "记忆与上下文",
+                "description": "通过 Graphiti 实现跨会话持久记忆"
+            },
+            "parallel": {
+                "title": "并行执行",
+                "description": "并行运行多个代理以加速开发周期"
+            }
+        }
+    },
+    "oauth": {
+        "title": "Claude 认证",
+        "description": "连接您的 Claude 账户以启用 AI 功能",
+        "keychainTitle": "安全存储",
+        "keychainDescription": "您的令牌使用系统钥匙串加密存储。您可能会看到 macOS 的密码提示 — 点击\"始终允许\"以避免再次看到此提示。"
+    },
+    "memory": {
+        "title": "记忆",
+        "description": "Auto Claude 记忆帮助在编码会话中记住上下文"
+    },
+    "completion": {
+        "title": "设置完成！",
+        "subtitle": "Auto Claude 已准备好帮助您构建出色的软件",
+        "setupComplete": "设置完成",
+        "setupCompleteDescription": "您的环境已配置并准备就绪。您可以立即开始创建任务或按自己的节奏探索应用。",
+        "whatsNext": "下一步？",
+        "createTask": {
+            "title": "创建任务",
+            "description": "从创建第一个任务开始，体验 Auto Claude 的强大功能。",
+            "action": "打开任务创建器"
+        },
+        "customizeSettings": {
+            "title": "自定义设置",
+            "description": "调整偏好设置、配置集成或重新运行此向导。",
+            "action": "打开设置"
+        },
+        "exploreDocs": {
+            "title": "探索文档",
+            "description": "了解更多高级功能、最佳实践和故障排除。"
+        },
+        "finish": "完成并开始构建",
+        "rerunHint": "您可以随时从设置 → 应用重新运行此向导"
+    },
+    "steps": {
+        "welcome": "欢迎",
+        "auth": "认证",
+        "devtools": "开发工具",
+        "memory": "记忆",
+        "done": "完成"
+    },
+    "devtools": {
+        "title": "开发工具",
+        "description": "选择您首选的 IDE 和终端来处理 Auto Claude 工作树",
+        "detecting": "检测已安装的工具...",
+        "detectAgain": "重新检测",
+        "whyConfigure": "为什么要配置这些？",
+        "whyConfigureDescription": "当 Auto Claude 在隔离的工作树中构建功能时，您可以直接在首选的 IDE 或终端中打开它们以测试和审查更改。",
+        "ide": {
+            "label": "首选 IDE",
+            "description": "Auto Claude 将在此编辑器中打开工作树",
+            "customPath": "自定义 IDE 路径"
+        },
+        "terminal": {
+            "label": "首选终端",
+            "description": "Auto Claude 将在此打开终端会话",
+            "customPath": "自定义终端路径"
+        },
+        "detectedSummary": "在您的系统上检测到:",
+        "noToolsDetected": "未检测到其他工具（将使用 VS Code 和系统终端）",
+        "custom": "自定义...",
+        "saveAndContinue": "保存并继续"
+    }
+}

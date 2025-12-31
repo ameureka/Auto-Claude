@@ -21,6 +21,16 @@ import frOnboarding from './locales/fr/onboarding.json';
 import frDialogs from './locales/fr/dialogs.json';
 import frTaskReview from './locales/fr/taskReview.json';
 
+// Import Chinese translation resources
+import zhCommon from './locales/zh/common.json';
+import zhNavigation from './locales/zh/navigation.json';
+import zhSettings from './locales/zh/settings.json';
+import zhTasks from './locales/zh/tasks.json';
+import zhWelcome from './locales/zh/welcome.json';
+import zhOnboarding from './locales/zh/onboarding.json';
+import zhDialogs from './locales/zh/dialogs.json';
+import zhTaskReview from './locales/zh/taskReview.json';
+
 export const defaultNS = 'common';
 
 export const resources = {
@@ -43,6 +53,16 @@ export const resources = {
     onboarding: frOnboarding,
     dialogs: frDialogs,
     taskReview: frTaskReview
+  },
+  zh: {
+    common: zhCommon,
+    navigation: zhNavigation,
+    settings: zhSettings,
+    tasks: zhTasks,
+    welcome: zhWelcome,
+    onboarding: zhOnboarding,
+    dialogs: zhDialogs,
+    taskReview: zhTaskReview
   }
 } as const;
 

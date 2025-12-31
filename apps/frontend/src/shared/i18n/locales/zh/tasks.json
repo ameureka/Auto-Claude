@@ -1,0 +1,86 @@
+{
+    "status": {
+        "backlog": "待办",
+        "todo": "待处理",
+        "in_progress": "进行中",
+        "review": "审查中",
+        "complete": "已完成",
+        "archived": "已归档"
+    },
+    "actions": {
+        "start": "开始",
+        "stop": "停止",
+        "recover": "恢复",
+        "resume": "继续",
+        "archive": "归档",
+        "delete": "删除",
+        "view": "查看详情"
+    },
+    "labels": {
+        "running": "运行中",
+        "aiReview": "AI 审查",
+        "needsReview": "需要审查",
+        "pending": "待处理",
+        "stuck": "卡住",
+        "incomplete": "未完成",
+        "recovering": "恢复中...",
+        "needsRecovery": "需要恢复",
+        "needsResume": "需要继续"
+    },
+    "reviewReason": {
+        "completed": "已完成",
+        "hasErrors": "有错误",
+        "qaIssues": "QA 问题",
+        "approvePlan": "批准计划"
+    },
+    "tooltips": {
+        "archiveTask": "归档任务",
+        "archiveAllDone": "归档所有已完成任务"
+    },
+    "creation": {
+        "title": "创建新任务",
+        "description": "描述您想要构建的内容",
+        "placeholder": "描述您的任务..."
+    },
+    "empty": {
+        "title": "暂无任务",
+        "description": "创建您的第一个任务以开始"
+    },
+    "kanban": {
+        "emptyBacklog": "暂无计划任务",
+        "emptyBacklogHint": "添加任务以开始",
+        "emptyInProgress": "无运行中任务",
+        "emptyInProgressHint": "从待办中启动任务",
+        "emptyAiReview": "暂无审查中任务",
+        "emptyAiReviewHint": "AI 将审查已完成的任务",
+        "emptyHumanReview": "暂无需要审查的内容",
+        "emptyHumanReviewHint": "需要您批准的任务将在此处显示",
+        "emptyDone": "暂无已完成任务",
+        "emptyDoneHint": "已批准的任务将在此处显示",
+        "emptyDefault": "暂无任务",
+        "dropHere": "拖放到这里",
+        "showArchived": "显示已归档"
+    },
+    "execution": {
+        "phases": {
+            "idle": "空闲",
+            "planning": "规划中",
+            "coding": "编码中",
+            "reviewing": "审查中",
+            "fixing": "修复中",
+            "complete": "已完成",
+            "failed": "失败"
+        },
+        "labels": {
+            "interrupted": "已中断",
+            "progress": "进度",
+            "entry": "条目",
+            "entries": "条目"
+        },
+        "shortPhases": {
+            "plan": "规划",
+            "code": "编码",
+            "qa": "QA"
+        }
+    }
+}

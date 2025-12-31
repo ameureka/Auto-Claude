@@ -1,0 +1,306 @@
+{
+    "title": "设置",
+    "tabs": {
+        "app": "应用设置",
+        "project": "项目设置"
+    },
+    "sections": {
+        "appearance": {
+            "title": "外观",
+            "description": "自定义 Auto Claude 的外观"
+        },
+        "display": {
+            "title": "显示",
+            "description": "调整 UI 元素的大小"
+        },
+        "language": {
+            "title": "语言",
+            "description": "选择您的首选语言"
+        },
+        "devtools": {
+            "title": "开发工具",
+            "description": "IDE 和终端偏好设置"
+        },
+        "agent": {
+            "title": "代理设置",
+            "description": "默认模型和框架"
+        },
+        "paths": {
+            "title": "路径",
+            "description": "CLI 工具和框架路径"
+        },
+        "integrations": {
+            "title": "集成",
+            "description": "API 密钥和 Claude 账户"
+        },
+        "updates": {
+            "title": "更新",
+            "description": "Auto Claude 更新"
+        },
+        "notifications": {
+            "title": "通知",
+            "description": "提醒偏好设置"
+        },
+        "debug": {
+            "title": "调试与日志",
+            "description": "故障排除工具"
+        }
+    },
+    "language": {
+        "label": "界面语言",
+        "description": "选择应用界面的语言"
+    },
+    "scale": {
+        "presets": "缩放预设",
+        "presetsDescription": "常用偏好的快速缩放选项",
+        "fineTune": "微调缩放",
+        "fineTuneDescription": "以 5% 为增量从 75% 调整到 200%",
+        "default": "默认",
+        "comfortable": "舒适",
+        "large": "大"
+    },
+    "general": {
+        "otherAgentSettings": "其他代理设置",
+        "otherAgentSettingsDescription": "其他代理配置选项",
+        "agentFramework": "代理框架",
+        "agentFrameworkDescription": "用于自主任务的编码框架",
+        "agentFrameworkAutoClaude": "Auto Claude",
+        "aiTerminalNaming": "AI 终端命名",
+        "aiTerminalNamingDescription": "根据命令自动命名终端（使用 Haiku）",
+        "featureModelSettings": "功能模型设置",
+        "featureModelSettingsDescription": "洞察、创意和路线图的模型和思考级别",
+        "model": "模型",
+        "thinkingLevel": "思考级别",
+        "paths": "路径",
+        "pathsDescription": "配置可执行文件和框架路径",
+        "pythonPath": "Python 路径",
+        "pythonPathDescription": "Python 可执行文件路径（留空自动检测）",
+        "pythonPathPlaceholder": "python3（默认）",
+        "gitPath": "Git 路径",
+        "gitPathDescription": "Git 可执行文件路径（留空自动检测）",
+        "gitPathPlaceholder": "git（默认）",
+        "githubCLIPath": "GitHub CLI 路径",
+        "githubCLIPathDescription": "GitHub CLI (gh) 可执行文件路径（留空自动检测）",
+        "githubCLIPathPlaceholder": "gh（默认）",
+        "claudePath": "Claude CLI 路径",
+        "claudePathDescription": "Claude CLI 可执行文件路径（留空自动检测）",
+        "claudePathPlaceholder": "claude（默认）",
+        "detectedPath": "自动检测",
+        "detectedVersion": "版本",
+        "detectedSource": "来源",
+        "sourceUserConfig": "用户配置",
+        "sourceVenv": "虚拟环境",
+        "sourceHomebrew": "Homebrew",
+        "sourceSystemPath": "系统 PATH",
+        "sourceBundled": "内置",
+        "sourceFallback": "备用",
+        "notDetected": "未检测到",
+        "autoClaudePath": "Auto Claude 路径",
+        "autoClaudePathDescription": "项目中 auto-claude 目录的相对路径",
+        "autoClaudePathPlaceholder": "auto-claude（默认）",
+        "autoNameTerminals": "自动命名终端",
+        "autoNameTerminalsDescription": "使用 AI 根据终端活动生成描述性名称"
+    },
+    "theme": {
+        "title": "外观",
+        "description": "自定义 Auto Claude 的外观",
+        "mode": "模式",
+        "modeDescription": "选择浅色或深色主题",
+        "light": "浅色",
+        "dark": "深色",
+        "system": "跟随系统",
+        "colorTheme": "颜色主题",
+        "colorThemeDescription": "选择您喜欢的配色方案"
+    },
+    "devtools": {
+        "title": "开发工具",
+        "description": "配置处理工作树时首选的 IDE 和终端",
+        "detecting": "检测已安装的工具...",
+        "detectAgain": "重新检测",
+        "ide": {
+            "label": "首选 IDE",
+            "description": "Auto Claude 将在此编辑器中打开工作树",
+            "placeholder": "选择 IDE...",
+            "customPath": "自定义 IDE 路径",
+            "customPathPlaceholder": "/path/to/your/ide"
+        },
+        "terminal": {
+            "label": "首选终端",
+            "description": "Auto Claude 将在此打开终端会话",
+            "placeholder": "选择终端...",
+            "customPath": "自定义终端路径",
+            "customPathPlaceholder": "/path/to/your/terminal"
+        },
+        "detected": "已检测",
+        "notInstalled": "未安装",
+        "detectedSummary": "在您的系统上检测到:",
+        "noToolsDetected": "未检测到其他工具（将使用 VS Code 和系统终端）"
+    },
+    "updates": {
+        "title": "更新",
+        "description": "管理 Auto Claude 更新",
+        "appUpdateReady": "应用更新就绪",
+        "newVersion": "新版本",
+        "released": "发布于",
+        "downloading": "下载中...",
+        "updateDownloaded": "更新已下载！点击安装以重启并应用更新。",
+        "installAndRestart": "安装并重启",
+        "downloadUpdate": "下载更新",
+        "version": "版本",
+        "loading": "加载中...",
+        "checkingForUpdates": "检查更新中...",
+        "newVersionAvailable": "有新版本可用:",
+        "latestVersion": "您正在运行最新版本。",
+        "viewRelease": "在 GitHub 上查看完整发布",
+        "unableToCheck": "无法检查更新",
+        "checkForUpdates": "检查更新",
+        "autoUpdateProjects": "自动更新项目",
+        "autoUpdateProjectsDescription": "有新版本可用时自动更新项目中的 Auto Claude",
+        "betaUpdates": "Beta 更新",
+        "betaUpdatesDescription": "接收包含新功能的预发布 Beta 版本（可能不太稳定）"
+    },
+    "notifications": {
+        "title": "通知",
+        "description": "配置默认通知偏好设置",
+        "onTaskComplete": "任务完成时",
+        "onTaskCompleteDescription": "任务成功完成时通知",
+        "onTaskFailed": "任务失败时",
+        "onTaskFailedDescription": "任务遇到错误时通知",
+        "onReviewNeeded": "需要审查时",
+        "onReviewNeededDescription": "QA 需要您审查时通知",
+        "sound": "声音",
+        "soundDescription": "通知时播放声音"
+    },
+    "actions": {
+        "save": "保存设置",
+        "rerunWizard": "重新运行向导",
+        "rerunWizardDescription": "再次启动设置向导"
+    },
+    "projectSections": {
+        "general": {
+            "title": "常规",
+            "description": "自动构建和代理配置",
+            "useClaudeMd": "使用 CLAUDE.md",
+            "useClaudeMdDescription": "在代理上下文中包含 CLAUDE.md 指令"
+        },
+        "claude": {
+            "title": "Claude 认证",
+            "description": "Claude 身份验证"
+        },
+        "linear": {
+            "title": "Linear",
+            "description": "Linear 集成"
+        },
+        "github": {
+            "title": "GitHub",
+            "description": "GitHub Issues 同步"
+        },
+        "memory": {
+            "title": "记忆",
+            "description": "Graphiti 记忆后端"
+        }
+    },
+    "agentProfile": {
+        "label": "代理配置文件",
+        "title": "默认代理配置文件",
+        "sectionDescription": "选择模型和思考级别的预设配置",
+        "profilesInfo": "代理配置文件提供 Claude 模型和思考级别的预设配置。创建新任务时，这些设置将用作默认值。您可以在任务创建向导中随时覆盖它们。",
+        "custom": "自定义",
+        "customConfiguration": "自定义配置",
+        "customDescription": "选择模型和思考级别",
+        "phaseConfiguration": "阶段配置",
+        "phaseConfigurationDescription": "为每个阶段自定义模型和思考级别",
+        "clickToCustomize": "点击自定义",
+        "model": "模型",
+        "thinking": "思考",
+        "thinkingLevel": "思考级别",
+        "selectModel": "选择模型",
+        "selectThinkingLevel": "选择思考级别",
+        "perPhaseOptimization": "（按阶段优化）",
+        "resetToDefaults": "重置为默认值",
+        "phaseConfigNote": "使用 Auto 配置文件创建新任务时，这些设置将用作默认值。您可以在任务创建向导中按任务覆盖它们。",
+        "phases": {
+            "spec": {
+                "label": "规格创建",
+                "description": "发现、需求、上下文收集"
+            },
+            "planning": {
+                "label": "规划",
+                "description": "实现规划和架构"
+            },
+            "coding": {
+                "label": "编码",
+                "description": "实际代码实现"
+            },
+            "qa": {
+                "label": "QA 审查",
+                "description": "质量保证和验证"
+            }
+        }
+    },
+    "workspace": {
+        "roles": {
+            "backend": "后端",
+            "frontend": "前端",
+            "mobile": "移动端",
+            "shared": "共享",
+            "apiGateway": "API 网关",
+            "worker": "Worker",
+            "other": "其他"
+        }
+    },
+    "integrations": {
+        "title": "集成",
+        "description": "管理 Claude 账户和 API 密钥",
+        "claudeAccounts": "Claude 账户",
+        "claudeAccountsDescription": "添加多个 Claude 订阅以在达到速率限制时自动切换。",
+        "noAccountsYet": "尚未配置账户",
+        "default": "默认",
+        "active": "活动",
+        "authenticated": "已认证",
+        "needsAuth": "需要认证",
+        "authenticate": "认证",
+        "setActive": "设为活动",
+        "manualTokenEntry": "手动输入令牌",
+        "runSetupToken": "运行 claude setup-token 获取您的令牌",
+        "tokenPlaceholder": "sk-ant-oat01-...",
+        "emailPlaceholder": "邮箱（可选，用于显示）",
+        "saveToken": "保存令牌",
+        "accountNamePlaceholder": "账户名称（例如：工作、个人）",
+        "autoSwitching": "自动账户切换",
+        "autoSwitchingDescription": "自动在 Claude 账户之间切换以避免中断。配置主动监控以在达到限制前切换。",
+        "enableAutoSwitching": "启用自动切换",
+        "masterSwitch": "所有自动切换功能的主开关",
+        "proactiveMonitoring": "主动监控",
+        "proactiveDescription": "定期检查使用情况并在达到限制前切换",
+        "checkUsageEvery": "检查使用情况间隔",
+        "seconds15": "15 秒",
+        "seconds30": "30 秒（推荐）",
+        "minute1": "1 分钟",
+        "disabled": "禁用",
+        "sessionThreshold": "会话使用阈值",
+        "sessionThresholdDescription": "会话使用达到此水平时切换（推荐：95%）",
+        "weeklyThreshold": "每周使用阈值",
+        "weeklyThresholdDescription": "每周使用达到此水平时切换（推荐：99%）",
+        "reactiveRecovery": "响应式恢复",
+        "reactiveDescription": "遇到意外速率限制时自动切换",
+        "apiKeys": "API 密钥",
+        "apiKeysInfo": "此处设置的密钥用作默认值。各项目可以在其设置中覆盖这些值。",
+        "openaiKey": "OpenAI API 密钥",
+        "openaiKeyDescription": "Graphiti 记忆后端（嵌入）必需"
+    },
+    "debug": {
+        "title": "调试与日志",
+        "description": "访问日志和调试信息以进行故障排除",
+        "openLogsFolder": "打开日志文件夹",
+        "copyDebugInfo": "复制调试信息",
+        "copied": "已复制！",
+        "loadInfo": "加载调试信息",
+        "systemInfo": "系统信息",
+        "logsLocation": "日志位置",
+        "recentErrors": "最近错误",
+        "noRecentErrors": "最近无错误",
+        "helpTitle": "报告问题",
+        "helpText": "报告错误时，点击\"复制调试信息\"获取系统信息和最近错误，帮助我们诊断问题。"
+    }
+}
