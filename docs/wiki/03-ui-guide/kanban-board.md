@@ -100,6 +100,7 @@
 | **Overview** | 任务描述和基本信息 |
 | **Subtasks (0)** | AI 拆分的子任务列表 |
 | **Logs** | 执行日志和历史记录 |
+| **Files** | AI 生成的规格和配置文件（执行中出现） |
 
 ### 底部操作
 
@@ -107,7 +108,66 @@
 |------|------|
 | **🗑️ Delete Task** | 删除任务 |
 | **▶️ Start Task** | 开始执行任务 |
+| **⏹️ Stop Task** | 停止正在执行的任务（红色） |
 | **Close** | 关闭面板 |
+
+---
+
+## 任务执行中状态
+
+当任务开始执行后，看板和详情面板会发生变化：
+
+### 看板执行中视图
+
+![任务执行中](../assets/kanban-in-progress.png)
+
+**任务卡片变化**：
+
+| 元素 | 说明 |
+|------|------|
+| **状态标签** | 显示 `Planning` 或 `In Progress` |
+| **进度条** | 橙色进度条显示当前阶段 |
+| **阶段指示** | `规划` → `编码` → `QA` 三个阶段点 |
+| **时间** | 显示 "just now" 等相对时间 |
+| **停止按钮** | 红色「停止」按钮可中断任务 |
+
+### Files 标签页（执行中专属）
+
+![Files 标签页](../assets/task-files-tab.png)
+
+任务执行过程中，AI 会生成多个 JSON 文件：
+
+| 文件 | 内容 | 用途 |
+|------|------|------|
+| **complexity_assessment.json** | 复杂度评估 | AI 分析任务复杂度和风险 |
+| **context.json** | 上下文信息 | 项目和任务的上下文数据 |
+| **implementation_plan.json** | 实现计划 | 详细的实现步骤规划 |
+| **project_index.json** | 项目索引 | 项目文件结构索引 |
+| **requirements.json** | 需求列表 | 从描述提取的需求 |
+| **task_logs.json** | 任务日志 | 执行过程日志 |
+| **task_metadata.json** | 任务元数据 | 任务配置和状态 |
+
+**complexity_assessment.json 示例内容**：
+
+```json
+{
+  "complexity": "standard",
+  "workflow_type": "feature",
+  "confidence": 0.85,
+  "reasoning": "This is a knowledge extraction task...",
+  "analysis": {
+    "scope": {
+      "estimated_files": 8,
+      "estimated_services": 1,
+      "is_cross_cutting": false
+    },
+    "risk": {
+      "level": "low",
+      "concerns": [...]
+    }
+  }
+}
+```
 
 ---
 
